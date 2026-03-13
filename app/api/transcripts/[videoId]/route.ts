@@ -3,7 +3,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getTranscriptProvider, processVideosInBackground } from '@/lib/transcript/transcript-provider'
+import { getTranscriptProvider } from '@/lib/transcript/transcript-provider'
 import { videoRepository } from '@/lib/supabase/videos'
 
 export async function POST(
@@ -25,9 +25,44 @@ export async function POST(
     }
 
     if (ids.length > 1) {
-      // batch mode – use background processor with concurrency 4
-      const map = await processVideosInBackground(ids, 4)
-      return NextResponse.json({ success: true, results: Object.fromEntries(map) }, { status: 200 })
+      // batch mode
+      const provider = getTranscriptProvider()
+      if (!provider.isAvailable()) {
+        return NextResponse.json(
+          { success: false, error: 'Transcript provider not available', source: 'none' },
+          { status: 503 }
+        )
+      }
+
+      const uniqueIds = [...new Set(ids.filter(Boolean))]
+      const results = new Map<string, string>()
+
+      await Promise.all(uniqueIds.map(async (id) => {
+        try {
+          const existing = await videoRepository.getByYouTubeId(id)
+          if (existing?.transcript_text) {
+            results.set(id, 'cached')
+            return
+          }
+
+          await videoRepository.updateTranscript(id, '', 'pending')
+          const result = await provider.fetchTranscript(id)
+          if (result.status === 'READY' && result.text) {
+            await videoRepository.updateTranscript(id, result.text, 'extracted')
+            results.set(id, 'extracted')
+          } else if (result.status === 'NOT_AVAILABLE') {
+            await videoRepository.updateTranscript(id, '', 'not_available')
+            results.set(id, 'not_available')
+          } else {
+            await videoRepository.updateTranscript(id, '', 'failed')
+            results.set(id, 'failed')
+          }
+        } catch {
+          results.set(id, 'failed')
+        }
+      }))
+
+      return NextResponse.json({ success: true, results: Object.fromEntries(results) }, { status: 200 })
     }
 
     // single-video fallback (ids.length === 1)
