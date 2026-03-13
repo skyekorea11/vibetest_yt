@@ -1,0 +1,265 @@
+sector_id,sector_name,industry_id,industry_name,subindustry_id,subindustry_name
+SEC01,Technology,IND001,Semiconductor,SUB0001,GPU
+SEC01,Technology,IND001,Semiconductor,SUB0002,CPU
+SEC01,Technology,IND001,Semiconductor,SUB0003,Memory
+SEC01,Technology,IND001,Semiconductor,SUB0004,Foundry
+SEC01,Technology,IND001,Semiconductor,SUB0005,EDA
+SEC01,Technology,IND001,Semiconductor,SUB0006,Equipment
+SEC01,Technology,IND002,Software,SUB0007,AI Platform
+SEC01,Technology,IND002,Software,SUB0008,SaaS
+SEC01,Technology,IND002,Software,SUB0009,Cybersecurity
+SEC01,Technology,IND002,Software,SUB0010,DevTools
+SEC01,Technology,IND002,Software,SUB0011,Enterprise Apps
+SEC01,Technology,IND002,Software,SUB0012,Data Infra
+SEC02,Consumer,IND003,Beverage,SUB0013,Milk Tea
+SEC02,Consumer,IND003,Beverage,SUB0014,Soft Drink
+SEC02,Consumer,IND003,Beverage,SUB0015,Coffee
+SEC02,Consumer,IND003,Beverage,SUB0016,RTD Tea
+SEC02,Consumer,IND003,Beverage,SUB0017,Energy Drink
+SEC02,Consumer,IND003,Beverage,SUB0018,Premium Water
+SEC02,Consumer,IND004,Branded Goods,SUB0019,Beauty
+SEC02,Consumer,IND004,Branded Goods,SUB0020,Personal Care
+SEC02,Consumer,IND004,Branded Goods,SUB0021,Home Goods
+SEC02,Consumer,IND004,Branded Goods,SUB0022,Pet Products
+SEC02,Consumer,IND004,Branded Goods,SUB0023,Sporting Goods
+SEC02,Consumer,IND004,Branded Goods,SUB0024,Luxury Beauty
+SEC03,Retail,IND005,Retail Operations,SUB0025,Convenience Store
+SEC03,Retail,IND005,Retail Operations,SUB0026,E-Commerce
+SEC03,Retail,IND005,Retail Operations,SUB0027,Department Store
+SEC03,Retail,IND005,Retail Operations,SUB0028,Duty Free
+SEC03,Retail,IND005,Retail Operations,SUB0029,Franchise Retail
+SEC03,Retail,IND005,Retail Operations,SUB0030,Store Technology
+SEC03,Retail,IND006,Consumer Logistics,SUB0031,Last Mile
+SEC03,Retail,IND006,Consumer Logistics,SUB0032,Fulfillment
+SEC03,Retail,IND006,Consumer Logistics,SUB0033,Cold Chain
+SEC03,Retail,IND006,Consumer Logistics,SUB0034,Warehouse Automation
+SEC03,Retail,IND006,Consumer Logistics,SUB0035,Cross Border Retail
+SEC03,Retail,IND006,Consumer Logistics,SUB0036,Retail Media
+SEC04,Finance,IND007,Banking,SUB0037,Commercial Banking
+SEC04,Finance,IND007,Banking,SUB0038,Digital Banking
+SEC04,Finance,IND007,Banking,SUB0039,Wealth Management
+SEC04,Finance,IND007,Banking,SUB0040,Consumer Finance
+SEC04,Finance,IND007,Banking,SUB0041,Credit Card
+SEC04,Finance,IND007,Banking,SUB0042,Payment
+SEC04,Finance,IND008,Insurance,SUB0043,Life
+SEC04,Finance,IND008,Insurance,SUB0044,P&C
+SEC04,Finance,IND008,Insurance,SUB0045,Health
+SEC04,Finance,IND008,Insurance,SUB0046,Reinsurance
+SEC04,Finance,IND008,Insurance,SUB0047,Insurance Tech
+SEC04,Finance,IND008,Insurance,SUB0048,Annuity
+SEC05,Healthcare,IND009,Biopharma,SUB0049,Oncology Drug
+SEC05,Healthcare,IND009,Biopharma,SUB0050,Biologics CDMO
+SEC05,Healthcare,IND009,Biopharma,SUB0051,Biosimilar
+SEC05,Healthcare,IND009,Biopharma,SUB0052,Cell Therapy
+SEC05,Healthcare,IND009,Biopharma,SUB0053,Gene Therapy
+SEC05,Healthcare,IND009,Biopharma,SUB0054,Drug Discovery
+SEC05,Healthcare,IND010,Healthcare Service,SUB0055,Hospital Operator
+SEC05,Healthcare,IND010,Healthcare Service,SUB0056,Diagnostics
+SEC05,Healthcare,IND010,Healthcare Service,SUB0057,Digital Health
+SEC05,Healthcare,IND010,Healthcare Service,SUB0058,Medical Devices
+SEC05,Healthcare,IND010,Healthcare Service,SUB0059,Nutrition Therapy
+SEC05,Healthcare,IND010,Healthcare Service,SUB0060,Preventive Care
+SEC06,Education,IND011,Education Service,SUB0061,K-12 Prep
+SEC06,Education,IND011,Education Service,SUB0062,Language Learning
+SEC06,Education,IND011,Education Service,SUB0063,Professional Test Prep
+SEC06,Education,IND011,Education Service,SUB0064,Curriculum Publisher
+SEC06,Education,IND011,Education Service,SUB0065,After School
+SEC06,Education,IND011,Education Service,SUB0066,EdTech Platform
+SEC06,Education,IND012,Learning Infrastructure,SUB0067,LMS
+SEC06,Education,IND012,Learning Infrastructure,SUB0068,Digital Textbook
+SEC06,Education,IND012,Learning Infrastructure,SUB0069,Online Coaching
+SEC06,Education,IND012,Learning Infrastructure,SUB0070,Exam Analytics
+SEC06,Education,IND012,Learning Infrastructure,SUB0071,Education Content
+SEC06,Education,IND012,Learning Infrastructure,SUB0072,Learning Device
+SEC07,Energy,IND013,Traditional Energy,SUB0073,Integrated Oil
+SEC07,Energy,IND013,Traditional Energy,SUB0074,Refining
+SEC07,Energy,IND013,Traditional Energy,SUB0075,LNG
+SEC07,Energy,IND013,Traditional Energy,SUB0076,Utility
+SEC07,Energy,IND013,Traditional Energy,SUB0077,Petrochemical
+SEC07,Energy,IND013,Traditional Energy,SUB0078,Energy Trading
+SEC07,Energy,IND014,Energy Transition,SUB0079,Hydrogen
+SEC07,Energy,IND014,Energy Transition,SUB0080,SMR
+SEC07,Energy,IND014,Energy Transition,SUB0081,CCUS
+SEC07,Energy,IND014,Energy Transition,SUB0082,Renewable Utility
+SEC07,Energy,IND014,Energy Transition,SUB0083,Battery Storage
+SEC07,Energy,IND014,Energy Transition,SUB0084,Smart Grid
+SEC08,Mobility,IND015,Auto Manufacturing,SUB0085,EV OEM
+SEC08,Mobility,IND015,Auto Manufacturing,SUB0086,ICE OEM
+SEC08,Mobility,IND015,Auto Manufacturing,SUB0087,Auto Parts
+SEC08,Mobility,IND015,Auto Manufacturing,SUB0088,ADAS
+SEC08,Mobility,IND015,Auto Manufacturing,SUB0089,Battery Pack
+SEC08,Mobility,IND015,Auto Manufacturing,SUB0090,Charging Infra
+SEC08,Mobility,IND016,Mobility Service,SUB0091,Ride Hailing
+SEC08,Mobility,IND016,Mobility Service,SUB0092,Fleet Management
+SEC08,Mobility,IND016,Mobility Service,SUB0093,Mobility Software
+SEC08,Mobility,IND016,Mobility Service,SUB0094,Logistics Vehicle
+SEC08,Mobility,IND016,Mobility Service,SUB0095,Connected Car
+SEC08,Mobility,IND016,Mobility Service,SUB0096,Telematics
+SEC09,AerospaceDefense,IND017,Defense Systems,SUB0097,Missile
+SEC09,AerospaceDefense,IND017,Defense Systems,SUB0098,Radar
+SEC09,AerospaceDefense,IND017,Defense Systems,SUB0099,Ammunition
+SEC09,AerospaceDefense,IND017,Defense Systems,SUB0100,Naval Defense
+SEC09,AerospaceDefense,IND017,Defense Systems,SUB0101,Aerospace Defense
+SEC09,AerospaceDefense,IND017,Defense Systems,SUB0102,Military Electronics
+SEC09,AerospaceDefense,IND018,Space Aerospace,SUB0103,Launch Vehicle
+SEC09,AerospaceDefense,IND018,Space Aerospace,SUB0104,Satellite
+SEC09,AerospaceDefense,IND018,Space Aerospace,SUB0105,Aircraft Manufacturing
+SEC09,AerospaceDefense,IND018,Space Aerospace,SUB0106,Space Services
+SEC09,AerospaceDefense,IND018,Space Aerospace,SUB0107,Drone
+SEC09,AerospaceDefense,IND018,Space Aerospace,SUB0108,Geospatial
+SEC10,Construction,IND019,Construction Services,SUB0109,General Contractor
+SEC10,Construction,IND019,Construction Services,SUB0110,Civil Engineering
+SEC10,Construction,IND019,Construction Services,SUB0111,Architecture Services
+SEC10,Construction,IND019,Construction Services,SUB0112,Interior Material
+SEC10,Construction,IND019,Construction Services,SUB0113,Urban Development
+SEC10,Construction,IND019,Construction Services,SUB0114,REIT Construction
+SEC10,Construction,IND020,Building Materials,SUB0115,Cement
+SEC10,Construction,IND020,Building Materials,SUB0116,Steel Structure
+SEC10,Construction,IND020,Building Materials,SUB0117,Insulation
+SEC10,Construction,IND020,Building Materials,SUB0118,Glass
+SEC10,Construction,IND020,Building Materials,SUB0119,Smart Building
+SEC10,Construction,IND020,Building Materials,SUB0120,Prefab
+SEC11,MediaEntertainment,IND021,Entertainment,SUB0121,Music Label
+SEC11,MediaEntertainment,IND021,Entertainment,SUB0122,Live Events
+SEC11,MediaEntertainment,IND021,Entertainment,SUB0123,Streaming Media
+SEC11,MediaEntertainment,IND021,Entertainment,SUB0124,Video Platform
+SEC11,MediaEntertainment,IND021,Entertainment,SUB0125,Creator Platform
+SEC11,MediaEntertainment,IND021,Entertainment,SUB0126,IP Licensing
+SEC11,MediaEntertainment,IND022,Gaming,SUB0127,Mobile Game
+SEC11,MediaEntertainment,IND022,Gaming,SUB0128,PC Game
+SEC11,MediaEntertainment,IND022,Gaming,SUB0129,Console Game
+SEC11,MediaEntertainment,IND022,Gaming,SUB0130,Game Engine
+SEC11,MediaEntertainment,IND022,Gaming,SUB0131,Esports
+SEC11,MediaEntertainment,IND022,Gaming,SUB0132,Game Publishing
+SEC12,Telecom,IND023,Telecom Service,SUB0133,Mobile Carrier
+SEC12,Telecom,IND023,Telecom Service,SUB0134,Fixed Network
+SEC12,Telecom,IND023,Telecom Service,SUB0135,MVNO
+SEC12,Telecom,IND023,Telecom Service,SUB0136,B2B ICT
+SEC12,Telecom,IND023,Telecom Service,SUB0137,Network Equipment
+SEC12,Telecom,IND023,Telecom Service,SUB0138,Telecom Cloud
+SEC12,Telecom,IND024,Connectivity,SUB0139,Fiber Infra
+SEC12,Telecom,IND024,Connectivity,SUB0140,Data Backbone
+SEC12,Telecom,IND024,Connectivity,SUB0141,Edge Network
+SEC12,Telecom,IND024,Connectivity,SUB0142,Satellite Connectivity
+SEC12,Telecom,IND024,Connectivity,SUB0143,IoT Connectivity
+SEC12,Telecom,IND024,Connectivity,SUB0144,Private Network
+SEC13,LogisticsShipping,IND025,Shipping,SUB0145,Container Shipping
+SEC13,LogisticsShipping,IND025,Shipping,SUB0146,Bulk Shipping
+SEC13,LogisticsShipping,IND025,Shipping,SUB0147,Port Operator
+SEC13,LogisticsShipping,IND025,Shipping,SUB0148,Freight Forwarding
+SEC13,LogisticsShipping,IND025,Shipping,SUB0149,Logistics Platform
+SEC13,LogisticsShipping,IND025,Shipping,SUB0150,Air Cargo
+SEC13,LogisticsShipping,IND026,Supply Chain,SUB0151,Warehouse REIT
+SEC13,LogisticsShipping,IND026,Supply Chain,SUB0152,Cold Chain
+SEC13,LogisticsShipping,IND026,Supply Chain,SUB0153,Cross Border Logistics
+SEC13,LogisticsShipping,IND026,Supply Chain,SUB0154,Logistics Software
+SEC13,LogisticsShipping,IND026,Supply Chain,SUB0155,Maritime Services
+SEC13,LogisticsShipping,IND026,Supply Chain,SUB0156,Customs Services
+SEC14,TravelLeisure,IND027,Travel Services,SUB0157,Travel Agency
+SEC14,TravelLeisure,IND027,Travel Services,SUB0158,Online Travel
+SEC14,TravelLeisure,IND027,Travel Services,SUB0159,Hotel Operator
+SEC14,TravelLeisure,IND027,Travel Services,SUB0160,Airline Leisure
+SEC14,TravelLeisure,IND027,Travel Services,SUB0161,Resort
+SEC14,TravelLeisure,IND027,Travel Services,SUB0162,Theme Park
+SEC14,TravelLeisure,IND028,Leisure Infrastructure,SUB0163,Convention
+SEC14,TravelLeisure,IND028,Leisure Infrastructure,SUB0164,Cruise
+SEC14,TravelLeisure,IND028,Leisure Infrastructure,SUB0165,Destination Marketing
+SEC14,TravelLeisure,IND028,Leisure Infrastructure,SUB0166,Wellness Tourism
+SEC14,TravelLeisure,IND028,Leisure Infrastructure,SUB0167,Duty Free Travel
+SEC14,TravelLeisure,IND028,Leisure Infrastructure,SUB0168,Event Tourism
+SEC15,AgricultureFoodSupply,IND029,Agribusiness,SUB0169,Seed Tech
+SEC15,AgricultureFoodSupply,IND029,Agribusiness,SUB0170,Fertilizer
+SEC15,AgricultureFoodSupply,IND029,Agribusiness,SUB0171,Agri Equipment
+SEC15,AgricultureFoodSupply,IND029,Agribusiness,SUB0172,Food Distribution
+SEC15,AgricultureFoodSupply,IND029,Agribusiness,SUB0173,Cold Storage
+SEC15,AgricultureFoodSupply,IND029,Agribusiness,SUB0174,Food Processing
+SEC15,AgricultureFoodSupply,IND030,Food Innovation,SUB0175,Plant Based
+SEC15,AgricultureFoodSupply,IND030,Food Innovation,SUB0176,Alternative Protein
+SEC15,AgricultureFoodSupply,IND030,Food Innovation,SUB0177,Food Safety Tech
+SEC15,AgricultureFoodSupply,IND030,Food Innovation,SUB0178,Meal Kit
+SEC15,AgricultureFoodSupply,IND030,Food Innovation,SUB0179,Smart Farming
+SEC15,AgricultureFoodSupply,IND030,Food Innovation,SUB0180,Agri Data
+SEC16,ChemicalsMaterials,IND031,Chemicals,SUB0181,Commodity Chemical
+SEC16,ChemicalsMaterials,IND031,Chemicals,SUB0182,Specialty Chemical
+SEC16,ChemicalsMaterials,IND031,Chemicals,SUB0183,Industrial Gas
+SEC16,ChemicalsMaterials,IND031,Chemicals,SUB0184,Fine Chemical
+SEC16,ChemicalsMaterials,IND031,Chemicals,SUB0185,Battery Material
+SEC16,ChemicalsMaterials,IND031,Chemicals,SUB0186,Eco Material
+SEC16,ChemicalsMaterials,IND032,Advanced Materials,SUB0187,Carbon Material
+SEC16,ChemicalsMaterials,IND032,Advanced Materials,SUB0188,Display Material
+SEC16,ChemicalsMaterials,IND032,Advanced Materials,SUB0189,Composite
+SEC16,ChemicalsMaterials,IND032,Advanced Materials,SUB0190,Recycling Material
+SEC16,ChemicalsMaterials,IND032,Advanced Materials,SUB0191,Bioplastic
+SEC16,ChemicalsMaterials,IND032,Advanced Materials,SUB0192,Catalyst
+SEC17,RealEstate,IND033,Real Estate Services,SUB0193,REIT
+SEC17,RealEstate,IND033,Real Estate Services,SUB0194,Property Developer
+SEC17,RealEstate,IND033,Real Estate Services,SUB0195,Property Management
+SEC17,RealEstate,IND033,Real Estate Services,SUB0196,Data Center REIT
+SEC17,RealEstate,IND033,Real Estate Services,SUB0197,Logistics REIT
+SEC17,RealEstate,IND033,Real Estate Services,SUB0198,Residential REIT
+SEC17,RealEstate,IND034,Real Estate Finance,SUB0199,Mortgage Finance
+SEC17,RealEstate,IND034,Real Estate Finance,SUB0200,RE Fund
+SEC17,RealEstate,IND034,Real Estate Finance,SUB0201,Asset Securitization
+SEC17,RealEstate,IND034,Real Estate Finance,SUB0202,Property Brokerage
+SEC17,RealEstate,IND034,Real Estate Finance,SUB0203,NPL Asset
+SEC17,RealEstate,IND034,Real Estate Finance,SUB0204,Urban Redevelopment
+SEC18,ClimateEnvironment,IND035,Environmental Services,SUB0205,Waste Treatment
+SEC18,ClimateEnvironment,IND035,Environmental Services,SUB0206,Water Utility
+SEC18,ClimateEnvironment,IND035,Environmental Services,SUB0207,Air Pollution Control
+SEC18,ClimateEnvironment,IND035,Environmental Services,SUB0208,Recycling
+SEC18,ClimateEnvironment,IND035,Environmental Services,SUB0209,Carbon Services
+SEC18,ClimateEnvironment,IND035,Environmental Services,SUB0210,Eco Engineering
+SEC18,ClimateEnvironment,IND036,Climate Software,SUB0211,Carbon Platform
+SEC18,ClimateEnvironment,IND036,Climate Software,SUB0212,ESG Data
+SEC18,ClimateEnvironment,IND036,Climate Software,SUB0213,Climate Analytics
+SEC18,ClimateEnvironment,IND036,Climate Software,SUB0214,Sustainability Consulting
+SEC18,ClimateEnvironment,IND036,Climate Software,SUB0215,Energy Optimization
+SEC18,ClimateEnvironment,IND036,Climate Software,SUB0216,Grid Optimization
+SEC19,LuxuryFashion,IND037,Luxury Retail,SUB0217,Luxury House
+SEC19,LuxuryFashion,IND037,Luxury Retail,SUB0218,Premium Apparel
+SEC19,LuxuryFashion,IND037,Luxury Retail,SUB0219,Footwear
+SEC19,LuxuryFashion,IND037,Luxury Retail,SUB0220,Accessory
+SEC19,LuxuryFashion,IND037,Luxury Retail,SUB0221,Department Luxury
+SEC19,LuxuryFashion,IND037,Luxury Retail,SUB0222,Store Design Luxury
+SEC19,LuxuryFashion,IND038,Fashion Supply,SUB0223,Textile
+SEC19,LuxuryFashion,IND038,Fashion Supply,SUB0224,Apparel OEM
+SEC19,LuxuryFashion,IND038,Fashion Supply,SUB0225,Designer Brand
+SEC19,LuxuryFashion,IND038,Fashion Supply,SUB0226,Fashion Platform
+SEC19,LuxuryFashion,IND038,Fashion Supply,SUB0227,Beauty Luxury
+SEC19,LuxuryFashion,IND038,Fashion Supply,SUB0228,Jewelry Watch
+SEC20,PublicPolicy,IND039,Policy Sensitive,SUB0229,Education Policy Beneficiary
+SEC20,PublicPolicy,IND039,Policy Sensitive,SUB0230,Healthcare Policy Beneficiary
+SEC20,PublicPolicy,IND039,Policy Sensitive,SUB0231,Housing Policy Beneficiary
+SEC20,PublicPolicy,IND039,Policy Sensitive,SUB0232,Defense Budget Beneficiary
+SEC20,PublicPolicy,IND039,Policy Sensitive,SUB0233,Energy Policy Beneficiary
+SEC20,PublicPolicy,IND039,Policy Sensitive,SUB0234,Public Procurement
+SEC20,PublicPolicy,IND040,Macro Exposed,SUB0235,Inflation Hedge
+SEC20,PublicPolicy,IND040,Macro Exposed,SUB0236,Rate Sensitive
+SEC20,PublicPolicy,IND040,Macro Exposed,SUB0237,Trade Sensitive
+SEC20,PublicPolicy,IND040,Macro Exposed,SUB0238,Demographic Demand
+SEC20,PublicPolicy,IND040,Macro Exposed,SUB0239,Fiscal Beneficiary
+SEC20,PublicPolicy,IND040,Macro Exposed,SUB0240,Regulatory Tech
+SEC21,DigitalAssets,IND041,Crypto Platforms,SUB0241,Exchange
+SEC21,DigitalAssets,IND041,Crypto Platforms,SUB0242,Custody
+SEC21,DigitalAssets,IND041,Crypto Platforms,SUB0243,Brokerage
+SEC21,DigitalAssets,IND041,Crypto Platforms,SUB0244,On-chain Analytics
+SEC21,DigitalAssets,IND041,Crypto Platforms,SUB0245,Tokenization Platform
+SEC21,DigitalAssets,IND041,Crypto Platforms,SUB0246,Wallet Infrastructure
+SEC21,DigitalAssets,IND042,Blockchain Infrastructure,SUB0247,Layer1 Ecosystem
+SEC21,DigitalAssets,IND042,Blockchain Infrastructure,SUB0248,Layer2 Ecosystem
+SEC21,DigitalAssets,IND042,Blockchain Infrastructure,SUB0249,Validation Services
+SEC21,DigitalAssets,IND042,Blockchain Infrastructure,SUB0250,Mining Infrastructure
+SEC21,DigitalAssets,IND042,Blockchain Infrastructure,SUB0251,Stablecoin Infrastructure
+SEC21,DigitalAssets,IND042,Blockchain Infrastructure,SUB0252,Crypto Payments
+SEC22,CyberSecurity,IND043,Security Software,SUB0253,Endpoint Security
+SEC22,CyberSecurity,IND043,Security Software,SUB0254,Network Security
+SEC22,CyberSecurity,IND043,Security Software,SUB0255,Cloud Security
+SEC22,CyberSecurity,IND043,Security Software,SUB0256,Identity Access Management
+SEC22,CyberSecurity,IND043,Security Software,SUB0257,SOC Platform
+SEC22,CyberSecurity,IND043,Security Software,SUB0258,Threat Intelligence
+SEC22,CyberSecurity,IND044,Cyber Infrastructure,SUB0259,Security Hardware
+SEC22,CyberSecurity,IND044,Cyber Infrastructure,SUB0260,Managed Security Service
+SEC22,CyberSecurity,IND044,Cyber Infrastructure,SUB0261,Incident Response Service
+SEC22,CyberSecurity,IND044,Cyber Infrastructure,SUB0262,Cyber Forensics
+SEC22,CyberSecurity,IND044,Cyber Infrastructure,SUB0263,Data Loss Prevention
+SEC22,CyberSecurity,IND044,Cyber Infrastructure,SUB0264,OT Security

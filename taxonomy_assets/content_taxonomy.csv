@@ -1,0 +1,529 @@
+taxonomy_id,sector,category,subcategory
+TX0001,Technology,Semiconductor,GPU
+TX0002,Technology,Semiconductor,CPU
+TX0003,Technology,Semiconductor,HBM
+TX0004,Technology,Semiconductor,Foundry
+TX0005,Technology,Semiconductor,GPU Trend
+TX0006,Technology,Semiconductor,GPU Market
+TX0007,Technology,Semiconductor,GPU Strategy
+TX0008,Technology,Semiconductor,GPU Case Study
+TX0009,Technology,AI Platform,Generative AI
+TX0010,Technology,AI Platform,AI Agent
+TX0011,Technology,AI Platform,Model Serving
+TX0012,Technology,AI Platform,Inference
+TX0013,Technology,AI Platform,Generative AI Trend
+TX0014,Technology,AI Platform,Generative AI Market
+TX0015,Technology,AI Platform,Generative AI Strategy
+TX0016,Technology,AI Platform,Generative AI Case Study
+TX0017,Technology,Cloud,IaaS
+TX0018,Technology,Cloud,SaaS
+TX0019,Technology,Cloud,Data Center
+TX0020,Technology,Cloud,Cybersecurity
+TX0021,Technology,Cloud,IaaS Trend
+TX0022,Technology,Cloud,IaaS Market
+TX0023,Technology,Cloud,IaaS Strategy
+TX0024,Technology,Cloud,IaaS Case Study
+TX0025,Consumer,Food,Milk Tea
+TX0026,Consumer,Food,Ramen
+TX0027,Consumer,Food,Dessert
+TX0028,Consumer,Food,Functional Food
+TX0029,Consumer,Food,Milk Tea Trend
+TX0030,Consumer,Food,Milk Tea Market
+TX0031,Consumer,Food,Milk Tea Strategy
+TX0032,Consumer,Food,Milk Tea Case Study
+TX0033,Consumer,Beauty,Skincare
+TX0034,Consumer,Beauty,Makeup
+TX0035,Consumer,Beauty,Fragrance
+TX0036,Consumer,Beauty,Derma Cosmetics
+TX0037,Consumer,Beauty,Skincare Trend
+TX0038,Consumer,Beauty,Skincare Market
+TX0039,Consumer,Beauty,Skincare Strategy
+TX0040,Consumer,Beauty,Skincare Case Study
+TX0041,Consumer,Lifestyle,Pet Care
+TX0042,Consumer,Lifestyle,Home Decor
+TX0043,Consumer,Lifestyle,Kitchenware
+TX0044,Consumer,Lifestyle,Outdoor
+TX0045,Consumer,Lifestyle,Pet Care Trend
+TX0046,Consumer,Lifestyle,Pet Care Market
+TX0047,Consumer,Lifestyle,Pet Care Strategy
+TX0048,Consumer,Lifestyle,Pet Care Case Study
+TX0049,Retail,Convenience,CU
+TX0050,Retail,Convenience,GS25
+TX0051,Retail,Convenience,7-Eleven
+TX0052,Retail,Convenience,Quick Commerce
+TX0053,Retail,Convenience,CU Trend
+TX0054,Retail,Convenience,CU Market
+TX0055,Retail,Convenience,CU Strategy
+TX0056,Retail,Convenience,CU Case Study
+TX0057,Retail,E-Commerce,Marketplaces
+TX0058,Retail,E-Commerce,Live Commerce
+TX0059,Retail,E-Commerce,D2C
+TX0060,Retail,E-Commerce,Social Commerce
+TX0061,Retail,E-Commerce,Marketplaces Trend
+TX0062,Retail,E-Commerce,Marketplaces Market
+TX0063,Retail,E-Commerce,Marketplaces Strategy
+TX0064,Retail,E-Commerce,Marketplaces Case Study
+TX0065,Retail,Department Store,Luxury Hall
+TX0066,Retail,Department Store,Duty Free
+TX0067,Retail,Department Store,Flagship Store
+TX0068,Retail,Department Store,Store Design
+TX0069,Retail,Department Store,Luxury Hall Trend
+TX0070,Retail,Department Store,Luxury Hall Market
+TX0071,Retail,Department Store,Luxury Hall Strategy
+TX0072,Retail,Department Store,Luxury Hall Case Study
+TX0073,Finance,Banking,Rate Cycle
+TX0074,Finance,Banking,Household Loans
+TX0075,Finance,Banking,SME Loans
+TX0076,Finance,Banking,NIM
+TX0077,Finance,Banking,Rate Cycle Trend
+TX0078,Finance,Banking,Rate Cycle Market
+TX0079,Finance,Banking,Rate Cycle Strategy
+TX0080,Finance,Banking,Rate Cycle Case Study
+TX0081,Finance,Capital Market,Brokerage
+TX0082,Finance,Capital Market,Asset Management
+TX0083,Finance,Capital Market,ETF
+TX0084,Finance,Capital Market,Retirement
+TX0085,Finance,Capital Market,Brokerage Trend
+TX0086,Finance,Capital Market,Brokerage Market
+TX0087,Finance,Capital Market,Brokerage Strategy
+TX0088,Finance,Capital Market,Brokerage Case Study
+TX0089,Finance,Insurance,Life Insurance
+TX0090,Finance,Insurance,P&C
+TX0091,Finance,Insurance,Health Insurance
+TX0092,Finance,Insurance,Reinsurance
+TX0093,Finance,Insurance,Life Insurance Trend
+TX0094,Finance,Insurance,Life Insurance Market
+TX0095,Finance,Insurance,Life Insurance Strategy
+TX0096,Finance,Insurance,Life Insurance Case Study
+TX0097,Healthcare,Pharma,Oncology
+TX0098,Healthcare,Pharma,Immunology
+TX0099,Healthcare,Pharma,Metabolic
+TX0100,Healthcare,Pharma,Rare Disease
+TX0101,Healthcare,Pharma,Oncology Trend
+TX0102,Healthcare,Pharma,Oncology Market
+TX0103,Healthcare,Pharma,Oncology Strategy
+TX0104,Healthcare,Pharma,Oncology Case Study
+TX0105,Healthcare,Medical Service,Hospital
+TX0106,Healthcare,Medical Service,Screening
+TX0107,Healthcare,Medical Service,Digital Health
+TX0108,Healthcare,Medical Service,Telemedicine
+TX0109,Healthcare,Medical Service,Hospital Trend
+TX0110,Healthcare,Medical Service,Hospital Market
+TX0111,Healthcare,Medical Service,Hospital Strategy
+TX0112,Healthcare,Medical Service,Hospital Case Study
+TX0113,Healthcare,Nutrition,Medical Nutrition
+TX0114,Healthcare,Nutrition,Supplements
+TX0115,Healthcare,Nutrition,Diet Therapy
+TX0116,Healthcare,Nutrition,Preventive Care
+TX0117,Healthcare,Nutrition,Medical Nutrition Trend
+TX0118,Healthcare,Nutrition,Medical Nutrition Market
+TX0119,Healthcare,Nutrition,Medical Nutrition Strategy
+TX0120,Healthcare,Nutrition,Medical Nutrition Case Study
+TX0121,Education,K-12,Suneung
+TX0122,Education,K-12,Mock Exam
+TX0123,Education,K-12,English
+TX0124,Education,K-12,Math
+TX0125,Education,K-12,Suneung Trend
+TX0126,Education,K-12,Suneung Market
+TX0127,Education,K-12,Suneung Strategy
+TX0128,Education,K-12,Suneung Case Study
+TX0129,Education,Private Education,Academy
+TX0130,Education,Private Education,Online Lecture
+TX0131,Education,Private Education,Study Cafe
+TX0132,Education,Private Education,Curriculum
+TX0133,Education,Private Education,Academy Trend
+TX0134,Education,Private Education,Academy Market
+TX0135,Education,Private Education,Academy Strategy
+TX0136,Education,Private Education,Academy Case Study
+TX0137,Education,EdTech,AI Tutor
+TX0138,Education,EdTech,LMS
+TX0139,Education,EdTech,Digital Textbook
+TX0140,Education,EdTech,Test Prep App
+TX0141,Education,EdTech,AI Tutor Trend
+TX0142,Education,EdTech,AI Tutor Market
+TX0143,Education,EdTech,AI Tutor Strategy
+TX0144,Education,EdTech,AI Tutor Case Study
+TX0145,Energy,Oil & Gas,Crude Oil
+TX0146,Energy,Oil & Gas,LNG
+TX0147,Energy,Oil & Gas,Refining
+TX0148,Energy,Oil & Gas,Petrochemical
+TX0149,Energy,Oil & Gas,Crude Oil Trend
+TX0150,Energy,Oil & Gas,Crude Oil Market
+TX0151,Energy,Oil & Gas,Crude Oil Strategy
+TX0152,Energy,Oil & Gas,Crude Oil Case Study
+TX0153,Energy,Power,Grid
+TX0154,Energy,Power,Utility
+TX0155,Energy,Power,IPP
+TX0156,Energy,Power,Smart Meter
+TX0157,Energy,Power,Grid Trend
+TX0158,Energy,Power,Grid Market
+TX0159,Energy,Power,Grid Strategy
+TX0160,Energy,Power,Grid Case Study
+TX0161,Energy,Transition,Hydrogen
+TX0162,Energy,Transition,CCUS
+TX0163,Energy,Transition,SMR
+TX0164,Energy,Transition,Renewable Mix
+TX0165,Energy,Transition,Hydrogen Trend
+TX0166,Energy,Transition,Hydrogen Market
+TX0167,Energy,Transition,Hydrogen Strategy
+TX0168,Energy,Transition,Hydrogen Case Study
+TX0169,Mobility,EV,Battery
+TX0170,Mobility,EV,Charging
+TX0171,Mobility,EV,EV Platform
+TX0172,Mobility,EV,Autonomous Driving
+TX0173,Mobility,EV,Battery Trend
+TX0174,Mobility,EV,Battery Market
+TX0175,Mobility,EV,Battery Strategy
+TX0176,Mobility,EV,Battery Case Study
+TX0177,Mobility,Automotive,OEM
+TX0178,Mobility,Automotive,Powertrain
+TX0179,Mobility,Automotive,ADAS
+TX0180,Mobility,Automotive,Infotainment
+TX0181,Mobility,Automotive,OEM Trend
+TX0182,Mobility,Automotive,OEM Market
+TX0183,Mobility,Automotive,OEM Strategy
+TX0184,Mobility,Automotive,OEM Case Study
+TX0185,Mobility,Transport Service,Ride Hailing
+TX0186,Mobility,Transport Service,Mobility Platform
+TX0187,Mobility,Transport Service,Fleet
+TX0188,Mobility,Transport Service,Logistics EV
+TX0189,Mobility,Transport Service,Ride Hailing Trend
+TX0190,Mobility,Transport Service,Ride Hailing Market
+TX0191,Mobility,Transport Service,Ride Hailing Strategy
+TX0192,Mobility,Transport Service,Ride Hailing Case Study
+TX0193,AerospaceDefense,Defense,Missile
+TX0194,AerospaceDefense,Defense,Radar
+TX0195,AerospaceDefense,Defense,Ammunition
+TX0196,AerospaceDefense,Defense,Naval System
+TX0197,AerospaceDefense,Defense,Missile Trend
+TX0198,AerospaceDefense,Defense,Missile Market
+TX0199,AerospaceDefense,Defense,Missile Strategy
+TX0200,AerospaceDefense,Defense,Missile Case Study
+TX0201,AerospaceDefense,Aerospace,Aircraft
+TX0202,AerospaceDefense,Aerospace,Satellite
+TX0203,AerospaceDefense,Aerospace,Launch
+TX0204,AerospaceDefense,Aerospace,Space Data
+TX0205,AerospaceDefense,Aerospace,Aircraft Trend
+TX0206,AerospaceDefense,Aerospace,Aircraft Market
+TX0207,AerospaceDefense,Aerospace,Aircraft Strategy
+TX0208,AerospaceDefense,Aerospace,Aircraft Case Study
+TX0209,AerospaceDefense,Security,Border Security
+TX0210,AerospaceDefense,Security,Drone Defense
+TX0211,AerospaceDefense,Security,Command System
+TX0212,AerospaceDefense,Security,Military AI
+TX0213,AerospaceDefense,Security,Border Security Trend
+TX0214,AerospaceDefense,Security,Border Security Market
+TX0215,AerospaceDefense,Security,Border Security Strategy
+TX0216,AerospaceDefense,Security,Border Security Case Study
+TX0217,Construction,Architecture,Library
+TX0218,Construction,Architecture,Public Building
+TX0219,Construction,Architecture,Cultural Facility
+TX0220,Construction,Architecture,Urban Regeneration
+TX0221,Construction,Architecture,Library Trend
+TX0222,Construction,Architecture,Library Market
+TX0223,Construction,Architecture,Library Strategy
+TX0224,Construction,Architecture,Library Case Study
+TX0225,Construction,Housing,Apartment
+TX0226,Construction,Housing,Remodeling
+TX0227,Construction,Housing,Interior
+TX0228,Construction,Housing,Smart Home
+TX0229,Construction,Housing,Apartment Trend
+TX0230,Construction,Housing,Apartment Market
+TX0231,Construction,Housing,Apartment Strategy
+TX0232,Construction,Housing,Apartment Case Study
+TX0233,Construction,Infrastructure,Rail
+TX0234,Construction,Infrastructure,Road
+TX0235,Construction,Infrastructure,Bridge
+TX0236,Construction,Infrastructure,Water
+TX0237,Construction,Infrastructure,Rail Trend
+TX0238,Construction,Infrastructure,Rail Market
+TX0239,Construction,Infrastructure,Rail Strategy
+TX0240,Construction,Infrastructure,Rail Case Study
+TX0241,MediaEntertainment,K-Pop,Agency
+TX0242,MediaEntertainment,K-Pop,Tour
+TX0243,MediaEntertainment,K-Pop,Fandom Platform
+TX0244,MediaEntertainment,K-Pop,IP Merchandise
+TX0245,MediaEntertainment,K-Pop,Agency Trend
+TX0246,MediaEntertainment,K-Pop,Agency Market
+TX0247,MediaEntertainment,K-Pop,Agency Strategy
+TX0248,MediaEntertainment,K-Pop,Agency Case Study
+TX0249,MediaEntertainment,Video,Streaming
+TX0250,MediaEntertainment,Video,OTT
+TX0251,MediaEntertainment,Video,Short Form
+TX0252,MediaEntertainment,Video,Creator Economy
+TX0253,MediaEntertainment,Video,Streaming Trend
+TX0254,MediaEntertainment,Video,Streaming Market
+TX0255,MediaEntertainment,Video,Streaming Strategy
+TX0256,MediaEntertainment,Video,Streaming Case Study
+TX0257,MediaEntertainment,Gaming,PC Game
+TX0258,MediaEntertainment,Gaming,Mobile Game
+TX0259,MediaEntertainment,Gaming,Console
+TX0260,MediaEntertainment,Gaming,Esports
+TX0261,MediaEntertainment,Gaming,PC Game Trend
+TX0262,MediaEntertainment,Gaming,PC Game Market
+TX0263,MediaEntertainment,Gaming,PC Game Strategy
+TX0264,MediaEntertainment,Gaming,PC Game Case Study
+TX0265,Telecom,Network,5G
+TX0266,Telecom,Network,6G
+TX0267,Telecom,Network,Fiber
+TX0268,Telecom,Network,Edge
+TX0269,Telecom,Network,5G Trend
+TX0270,Telecom,Network,5G Market
+TX0271,Telecom,Network,5G Strategy
+TX0272,Telecom,Network,5G Case Study
+TX0273,Telecom,Service,Subscriber Growth
+TX0274,Telecom,Service,ARPU
+TX0275,Telecom,Service,Bundling
+TX0276,Telecom,Service,MVNO
+TX0277,Telecom,Service,Subscriber Growth Trend
+TX0278,Telecom,Service,Subscriber Growth Market
+TX0279,Telecom,Service,Subscriber Growth Strategy
+TX0280,Telecom,Service,Subscriber Growth Case Study
+TX0281,Telecom,Enterprise,B2B ICT
+TX0282,Telecom,Enterprise,Cloud Telco
+TX0283,Telecom,Enterprise,Security
+TX0284,Telecom,Enterprise,IoT
+TX0285,Telecom,Enterprise,B2B ICT Trend
+TX0286,Telecom,Enterprise,B2B ICT Market
+TX0287,Telecom,Enterprise,B2B ICT Strategy
+TX0288,Telecom,Enterprise,B2B ICT Case Study
+TX0289,LogisticsShipping,Shipping,Container
+TX0290,LogisticsShipping,Shipping,Bulk
+TX0291,LogisticsShipping,Shipping,Port
+TX0292,LogisticsShipping,Shipping,Freight Rate
+TX0293,LogisticsShipping,Shipping,Container Trend
+TX0294,LogisticsShipping,Shipping,Container Market
+TX0295,LogisticsShipping,Shipping,Container Strategy
+TX0296,LogisticsShipping,Shipping,Container Case Study
+TX0297,LogisticsShipping,Logistics,Last Mile
+TX0298,LogisticsShipping,Logistics,Warehouse
+TX0299,LogisticsShipping,Logistics,Air Cargo
+TX0300,LogisticsShipping,Logistics,Cold Chain
+TX0301,LogisticsShipping,Logistics,Last Mile Trend
+TX0302,LogisticsShipping,Logistics,Last Mile Market
+TX0303,LogisticsShipping,Logistics,Last Mile Strategy
+TX0304,LogisticsShipping,Logistics,Last Mile Case Study
+TX0305,LogisticsShipping,Trade Route,Suez
+TX0306,LogisticsShipping,Trade Route,Red Sea
+TX0307,LogisticsShipping,Trade Route,Hormuz
+TX0308,LogisticsShipping,Trade Route,Geopolitical Route
+TX0309,LogisticsShipping,Trade Route,Suez Trend
+TX0310,LogisticsShipping,Trade Route,Suez Market
+TX0311,LogisticsShipping,Trade Route,Suez Strategy
+TX0312,LogisticsShipping,Trade Route,Suez Case Study
+TX0313,TravelLeisure,Travel,Package Tour
+TX0314,TravelLeisure,Travel,Inbound
+TX0315,TravelLeisure,Travel,Outbound
+TX0316,TravelLeisure,Travel,Travel Platform
+TX0317,TravelLeisure,Travel,Package Tour Trend
+TX0318,TravelLeisure,Travel,Package Tour Market
+TX0319,TravelLeisure,Travel,Package Tour Strategy
+TX0320,TravelLeisure,Travel,Package Tour Case Study
+TX0321,TravelLeisure,Leisure,Theme Park
+TX0322,TravelLeisure,Leisure,Resort
+TX0323,TravelLeisure,Leisure,Hotel
+TX0324,TravelLeisure,Leisure,Cruise
+TX0325,TravelLeisure,Leisure,Theme Park Trend
+TX0326,TravelLeisure,Leisure,Theme Park Market
+TX0327,TravelLeisure,Leisure,Theme Park Strategy
+TX0328,TravelLeisure,Leisure,Theme Park Case Study
+TX0329,TravelLeisure,Experience,Cultural Travel
+TX0330,TravelLeisure,Experience,Food Travel
+TX0331,TravelLeisure,Experience,Sports Travel
+TX0332,TravelLeisure,Experience,Wellness Travel
+TX0333,TravelLeisure,Experience,Cultural Travel Trend
+TX0334,TravelLeisure,Experience,Cultural Travel Market
+TX0335,TravelLeisure,Experience,Cultural Travel Strategy
+TX0336,TravelLeisure,Experience,Cultural Travel Case Study
+TX0337,AgricultureFoodSupply,Agriculture,Smart Farm
+TX0338,AgricultureFoodSupply,Agriculture,Seed
+TX0339,AgricultureFoodSupply,Agriculture,Fertilizer
+TX0340,AgricultureFoodSupply,Agriculture,Agri Robotics
+TX0341,AgricultureFoodSupply,Agriculture,Smart Farm Trend
+TX0342,AgricultureFoodSupply,Agriculture,Smart Farm Market
+TX0343,AgricultureFoodSupply,Agriculture,Smart Farm Strategy
+TX0344,AgricultureFoodSupply,Agriculture,Smart Farm Case Study
+TX0345,AgricultureFoodSupply,Food Supply,Cold Storage
+TX0346,AgricultureFoodSupply,Food Supply,Food Distribution
+TX0347,AgricultureFoodSupply,Food Supply,Meal Kit
+TX0348,AgricultureFoodSupply,Food Supply,Food Safety
+TX0349,AgricultureFoodSupply,Food Supply,Cold Storage Trend
+TX0350,AgricultureFoodSupply,Food Supply,Cold Storage Market
+TX0351,AgricultureFoodSupply,Food Supply,Cold Storage Strategy
+TX0352,AgricultureFoodSupply,Food Supply,Cold Storage Case Study
+TX0353,AgricultureFoodSupply,Alt Food,Plant-Based
+TX0354,AgricultureFoodSupply,Alt Food,Cultivated Meat
+TX0355,AgricultureFoodSupply,Alt Food,FoodTech
+TX0356,AgricultureFoodSupply,Alt Food,Protein
+TX0357,AgricultureFoodSupply,Alt Food,Plant-Based Trend
+TX0358,AgricultureFoodSupply,Alt Food,Plant-Based Market
+TX0359,AgricultureFoodSupply,Alt Food,Plant-Based Strategy
+TX0360,AgricultureFoodSupply,Alt Food,Plant-Based Case Study
+TX0361,ChemicalsMaterials,Chemical,Basic Chemical
+TX0362,ChemicalsMaterials,Chemical,Specialty
+TX0363,ChemicalsMaterials,Chemical,Industrial Gas
+TX0364,ChemicalsMaterials,Chemical,Fine Chemical
+TX0365,ChemicalsMaterials,Chemical,Basic Chemical Trend
+TX0366,ChemicalsMaterials,Chemical,Basic Chemical Market
+TX0367,ChemicalsMaterials,Chemical,Basic Chemical Strategy
+TX0368,ChemicalsMaterials,Chemical,Basic Chemical Case Study
+TX0369,ChemicalsMaterials,Advanced Material,Carbon Fiber
+TX0370,ChemicalsMaterials,Advanced Material,Display Material
+TX0371,ChemicalsMaterials,Advanced Material,Battery Material
+TX0372,ChemicalsMaterials,Advanced Material,Bio Material
+TX0373,ChemicalsMaterials,Advanced Material,Carbon Fiber Trend
+TX0374,ChemicalsMaterials,Advanced Material,Carbon Fiber Market
+TX0375,ChemicalsMaterials,Advanced Material,Carbon Fiber Strategy
+TX0376,ChemicalsMaterials,Advanced Material,Carbon Fiber Case Study
+TX0377,ChemicalsMaterials,Circular,Recycling
+TX0378,ChemicalsMaterials,Circular,Waste Upcycling
+TX0379,ChemicalsMaterials,Circular,Bioplastic
+TX0380,ChemicalsMaterials,Circular,ESG Material
+TX0381,ChemicalsMaterials,Circular,Recycling Trend
+TX0382,ChemicalsMaterials,Circular,Recycling Market
+TX0383,ChemicalsMaterials,Circular,Recycling Strategy
+TX0384,ChemicalsMaterials,Circular,Recycling Case Study
+TX0385,RealEstate,Commercial,Office
+TX0386,RealEstate,Commercial,Retail Mall
+TX0387,RealEstate,Commercial,Data Center RE
+TX0388,RealEstate,Commercial,Logistics Center
+TX0389,RealEstate,Commercial,Office Trend
+TX0390,RealEstate,Commercial,Office Market
+TX0391,RealEstate,Commercial,Office Strategy
+TX0392,RealEstate,Commercial,Office Case Study
+TX0393,RealEstate,Residential,Apartment Lease
+TX0394,RealEstate,Residential,Urban Housing
+TX0395,RealEstate,Residential,Senior Housing
+TX0396,RealEstate,Residential,Student Housing
+TX0397,RealEstate,Residential,Apartment Lease Trend
+TX0398,RealEstate,Residential,Apartment Lease Market
+TX0399,RealEstate,Residential,Apartment Lease Strategy
+TX0400,RealEstate,Residential,Apartment Lease Case Study
+TX0401,RealEstate,Investment,REIT
+TX0402,RealEstate,Investment,Property Fund
+TX0403,RealEstate,Investment,Asset Management
+TX0404,RealEstate,Investment,NPL
+TX0405,RealEstate,Investment,REIT Trend
+TX0406,RealEstate,Investment,REIT Market
+TX0407,RealEstate,Investment,REIT Strategy
+TX0408,RealEstate,Investment,REIT Case Study
+TX0409,ClimateEnvironment,Climate Tech,Carbon Accounting
+TX0410,ClimateEnvironment,Climate Tech,Carbon Credit
+TX0411,ClimateEnvironment,Climate Tech,Decarbonization
+TX0412,ClimateEnvironment,Climate Tech,Climate Risk
+TX0413,ClimateEnvironment,Climate Tech,Carbon Accounting Trend
+TX0414,ClimateEnvironment,Climate Tech,Carbon Accounting Market
+TX0415,ClimateEnvironment,Climate Tech,Carbon Accounting Strategy
+TX0416,ClimateEnvironment,Climate Tech,Carbon Accounting Case Study
+TX0417,ClimateEnvironment,Environment,Waste Management
+TX0418,ClimateEnvironment,Environment,Water Treatment
+TX0419,ClimateEnvironment,Environment,Air Quality
+TX0420,ClimateEnvironment,Environment,Soil
+TX0421,ClimateEnvironment,Environment,Waste Management Trend
+TX0422,ClimateEnvironment,Environment,Waste Management Market
+TX0423,ClimateEnvironment,Environment,Waste Management Strategy
+TX0424,ClimateEnvironment,Environment,Waste Management Case Study
+TX0425,ClimateEnvironment,Green Infrastructure,Smart Grid
+TX0426,ClimateEnvironment,Green Infrastructure,Green Building
+TX0427,ClimateEnvironment,Green Infrastructure,Circular City
+TX0428,ClimateEnvironment,Green Infrastructure,Eco Mobility
+TX0429,ClimateEnvironment,Green Infrastructure,Smart Grid Trend
+TX0430,ClimateEnvironment,Green Infrastructure,Smart Grid Market
+TX0431,ClimateEnvironment,Green Infrastructure,Smart Grid Strategy
+TX0432,ClimateEnvironment,Green Infrastructure,Smart Grid Case Study
+TX0433,LuxuryFashion,Luxury,Luxury Brand
+TX0434,LuxuryFashion,Luxury,Flagship Store
+TX0435,LuxuryFashion,Luxury,Visual Merchandising
+TX0436,LuxuryFashion,Luxury,Store Experience
+TX0437,LuxuryFashion,Luxury,Luxury Brand Trend
+TX0438,LuxuryFashion,Luxury,Luxury Brand Market
+TX0439,LuxuryFashion,Luxury,Luxury Brand Strategy
+TX0440,LuxuryFashion,Luxury,Luxury Brand Case Study
+TX0441,LuxuryFashion,Fashion,Apparel
+TX0442,LuxuryFashion,Fashion,Footwear
+TX0443,LuxuryFashion,Fashion,Accessory
+TX0444,LuxuryFashion,Fashion,DTC Fashion
+TX0445,LuxuryFashion,Fashion,Apparel Trend
+TX0446,LuxuryFashion,Fashion,Apparel Market
+TX0447,LuxuryFashion,Fashion,Apparel Strategy
+TX0448,LuxuryFashion,Fashion,Apparel Case Study
+TX0449,LuxuryFashion,Craft,Leather
+TX0450,LuxuryFashion,Craft,Jewelry
+TX0451,LuxuryFashion,Craft,Watch
+TX0452,LuxuryFashion,Craft,Perfume
+TX0453,LuxuryFashion,Craft,Leather Trend
+TX0454,LuxuryFashion,Craft,Leather Market
+TX0455,LuxuryFashion,Craft,Leather Strategy
+TX0456,LuxuryFashion,Craft,Leather Case Study
+TX0457,PublicPolicy,Regulation,Tax Policy
+TX0458,PublicPolicy,Regulation,Education Policy
+TX0459,PublicPolicy,Regulation,Housing Policy
+TX0460,PublicPolicy,Regulation,Healthcare Policy
+TX0461,PublicPolicy,Regulation,Tax Policy Trend
+TX0462,PublicPolicy,Regulation,Tax Policy Market
+TX0463,PublicPolicy,Regulation,Tax Policy Strategy
+TX0464,PublicPolicy,Regulation,Tax Policy Case Study
+TX0465,PublicPolicy,Macro,Inflation
+TX0466,PublicPolicy,Macro,Employment
+TX0467,PublicPolicy,Macro,Trade
+TX0468,PublicPolicy,Macro,Demographics
+TX0469,PublicPolicy,Macro,Inflation Trend
+TX0470,PublicPolicy,Macro,Inflation Market
+TX0471,PublicPolicy,Macro,Inflation Strategy
+TX0472,PublicPolicy,Macro,Inflation Case Study
+TX0473,PublicPolicy,Governance,Election
+TX0474,PublicPolicy,Governance,Public Finance
+TX0475,PublicPolicy,Governance,Local Government
+TX0476,PublicPolicy,Governance,Public Procurement
+TX0477,PublicPolicy,Governance,Election Trend
+TX0478,PublicPolicy,Governance,Election Market
+TX0479,PublicPolicy,Governance,Election Strategy
+TX0480,PublicPolicy,Governance,Election Case Study
+TX0481,DigitalAssets,Crypto Market,Bitcoin
+TX0482,DigitalAssets,Crypto Market,Ethereum
+TX0483,DigitalAssets,Crypto Market,Altcoin
+TX0484,DigitalAssets,Crypto Market,Stablecoin
+TX0485,DigitalAssets,Crypto Market,Bitcoin Trend
+TX0486,DigitalAssets,Crypto Market,Bitcoin Market
+TX0487,DigitalAssets,Crypto Market,Bitcoin Strategy
+TX0488,DigitalAssets,Crypto Market,Bitcoin Case Study
+TX0489,DigitalAssets,Blockchain Infra,Layer1
+TX0490,DigitalAssets,Blockchain Infra,Layer2
+TX0491,DigitalAssets,Blockchain Infra,Validator
+TX0492,DigitalAssets,Blockchain Infra,Custody
+TX0493,DigitalAssets,Blockchain Infra,Layer1 Trend
+TX0494,DigitalAssets,Blockchain Infra,Layer1 Market
+TX0495,DigitalAssets,Blockchain Infra,Layer1 Strategy
+TX0496,DigitalAssets,Blockchain Infra,Layer1 Case Study
+TX0497,DigitalAssets,Crypto Finance,Spot ETF
+TX0498,DigitalAssets,Crypto Finance,Exchange
+TX0499,DigitalAssets,Crypto Finance,On-chain Data
+TX0500,DigitalAssets,Crypto Finance,Tokenization
+TX0501,DigitalAssets,Crypto Finance,Spot ETF Trend
+TX0502,DigitalAssets,Crypto Finance,Spot ETF Market
+TX0503,DigitalAssets,Crypto Finance,Spot ETF Strategy
+TX0504,DigitalAssets,Crypto Finance,Spot ETF Case Study
+TX0505,CyberSecurity,Threat,Hacking
+TX0506,CyberSecurity,Threat,Backdoor
+TX0507,CyberSecurity,Threat,Ransomware
+TX0508,CyberSecurity,Threat,Zero Day
+TX0509,CyberSecurity,Threat,Hacking Trend
+TX0510,CyberSecurity,Threat,Hacking Market
+TX0511,CyberSecurity,Threat,Hacking Strategy
+TX0512,CyberSecurity,Threat,Hacking Case Study
+TX0513,CyberSecurity,Security Stack,Endpoint Security
+TX0514,CyberSecurity,Security Stack,Network Security
+TX0515,CyberSecurity,Security Stack,Cloud Security
+TX0516,CyberSecurity,Security Stack,Identity Security
+TX0517,CyberSecurity,Security Stack,Endpoint Security Trend
+TX0518,CyberSecurity,Security Stack,Endpoint Security Market
+TX0519,CyberSecurity,Security Stack,Endpoint Security Strategy
+TX0520,CyberSecurity,Security Stack,Endpoint Security Case Study
+TX0521,CyberSecurity,Policy & Response,Incident Response
+TX0522,CyberSecurity,Policy & Response,Cyber Drill
+TX0523,CyberSecurity,Policy & Response,Compliance
+TX0524,CyberSecurity,Policy & Response,Security Audit
+TX0525,CyberSecurity,Policy & Response,Incident Response Trend
+TX0526,CyberSecurity,Policy & Response,Incident Response Market
+TX0527,CyberSecurity,Policy & Response,Incident Response Strategy
+TX0528,CyberSecurity,Policy & Response,Incident Response Case Study
