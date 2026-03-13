@@ -83,6 +83,26 @@ export const videoRepository = {
   },
 
   /**
+   * Get videos by a set of YouTube video IDs
+   */
+  async getByYouTubeIds(youtubeVideoIds: string[]): Promise<Video[]> {
+    try {
+      if (youtubeVideoIds.length === 0) return []
+      const { data, error } = await supabase
+        .from('videos')
+        .select('*')
+        .in('youtube_video_id', youtubeVideoIds)
+        .order('published_at', { ascending: false })
+
+      if (error) throw error
+      return data || []
+    } catch (error) {
+      console.error('Error fetching videos by ids:', error)
+      return []
+    }
+  },
+
+  /**
    * Get video by YouTube video ID
    */
   async getByYouTubeId(youtubeVideoId: string): Promise<Video | null> {

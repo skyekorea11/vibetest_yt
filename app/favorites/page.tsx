@@ -115,15 +115,15 @@ export default function FavoritesPage() {
     try {
       const hasApiKey = !!process.env.NEXT_PUBLIC_YOUTUBE_API_KEY?.trim()
       if (hasApiKey) {
-        const [channelsData, videosData, favoritesData] = await Promise.all([
+        const [channelsData, favoritesData] = await Promise.all([
           channelRepository.getAll(),
-          videoRepository.getAll(),
           videoFavoriteRepository.getAllFavorites(),
         ])
+        const favoriteVideoIds = favoritesData.map(f => f.youtube_video_id)
+        const videosData = await videoRepository.getByYouTubeIds(favoriteVideoIds)
         const validVideosData = videosData.filter(isValidStoredVideo)
         setChannels(channelsData)
         setAllVideos(validVideosData)
-        const favoriteVideoIds = favoritesData.map(f => f.youtube_video_id)
         setFavoriteIds(new Set(favoriteVideoIds))
 
         // Initialize news/stocks from DB cache
@@ -141,16 +141,8 @@ export default function FavoritesPage() {
         setNewsByVideoId(newsInit)
         setStocksByVideoId(stocksInit)
         setNewsCacheKeyByVideoId(cacheKeyInit)
-
-        // Pre-load notes for all favorite videos
-        const notesResults = await Promise.all(
-          favoriteVideoIds.map(id => getVideoNoteAction(id))
-        )
-        const notesInit: Record<string, string> = {}
-        favoriteVideoIds.forEach((id, i) => {
-          if (notesResults[i]) notesInit[id] = notesResults[i]!
-        })
-        setNotesByVideoId(notesInit)
+        // Notes are loaded lazily for selected video only.
+        setNotesByVideoId({})
       } else {
         setChannels(MOCK_CHANNELS)
         setAllVideos(MOCK_VIDEOS)
@@ -271,7 +263,29 @@ export default function FavoritesPage() {
       setEditingNoteText('')
       return
     }
-    setEditingNoteText(notesByVideoId[selectedVideoId] || '')
+
+    const cached = notesByVideoId[selectedVideoId]
+    if (cached !== undefined) {
+      setEditingNoteText(cached)
+      return
+    }
+
+    setEditingNoteText('')
+    let cancelled = false
+    ;(async () => {
+      const note = await getVideoNoteAction(selectedVideoId)
+      if (cancelled) return
+      const resolved = note || ''
+      setNotesByVideoId(prev => {
+        if (prev[selectedVideoId] !== undefined) return prev
+        return { ...prev, [selectedVideoId]: resolved }
+      })
+      setEditingNoteText(resolved)
+    })()
+
+    return () => {
+      cancelled = true
+    }
   }, [selectedVideoId, notesByVideoId])
 
   // Build stock → videos map (many-to-many: one video can appear under multiple stocks)
