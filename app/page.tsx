@@ -43,6 +43,9 @@ interface NewsChannelItem {
   videoUrl: string
 }
 
+type ChannelStockMode = 'auto' | 'low_stock' | 'off'
+type ChannelNewsMode = 'auto' | 'strict' | 'off'
+
 export default function DashboardPage() {
   const panelMaxHeight = 'calc(100vh - 64px)'
 
@@ -77,6 +80,18 @@ export default function DashboardPage() {
   const { enableTranscriptPipeline } = useSummaryPreferences()
   const channelTitleById = useMemo(
     () => new Map(channels.map((channel) => [channel.youtube_channel_id, channel.title])),
+    [channels]
+  )
+  const channelModeById = useMemo(
+    () => new Map(
+      channels.map((channel) => [
+        channel.youtube_channel_id,
+        {
+          stock: (channel.stock_mode || 'auto') as ChannelStockMode,
+          news: (channel.news_mode || 'auto') as ChannelNewsMode,
+        },
+      ])
+    ),
     [channels]
   )
 
@@ -122,6 +137,20 @@ export default function DashboardPage() {
 
   const getChannelDisplayName = (video: Video) =>
     video.channel_title || channelTitleById.get(video.youtube_channel_id) || '채널 정보 없음'
+  const getChannelModes = (video: Video) =>
+    channelModeById.get(video.youtube_channel_id) || { stock: 'auto' as ChannelStockMode, news: 'auto' as ChannelNewsMode }
+  const getEmptyNewsMessage = (video: Video) => {
+    const { news } = getChannelModes(video)
+    if (news === 'off') return '관련 기사를 보려면 설정에서 기사 모드를 auto로 바꿔주세요.'
+    if (news === 'strict') return 'strict 모드로 필터링되어 관련 기사가 없습니다. 설정에서 auto로 바꿔보세요.'
+    return '요약 기반으로 찾은 뉴스가 없습니다.'
+  }
+  const getEmptyStocksMessage = (video: Video) => {
+    const { stock } = getChannelModes(video)
+    if (stock === 'off') return '관련 종목을 보려면 설정에서 관련주 모드를 auto로 바꿔주세요.'
+    if (stock === 'low_stock') return 'low_stock 모드입니다. 관련 종목을 보려면 설정에서 auto로 바꿔주세요.'
+    return '관련 종목을 찾지 못했습니다.'
+  }
 
   const formatPublishedDate = (value: string | null) => {
     if (!value) return ''
@@ -574,7 +603,7 @@ export default function DashboardPage() {
                   ) : newsErrorByVideoId[selectedVideo.youtube_video_id] ? (
                     <p className="text-sm text-gray-400">{newsErrorByVideoId[selectedVideo.youtube_video_id]}</p>
                   ) : (newsByVideoId[selectedVideo.youtube_video_id] || []).length === 0 ? (
-                    <p className="text-sm text-gray-400">요약 기반으로 찾은 뉴스가 없습니다.</p>
+                    <p className="text-sm text-gray-400">{getEmptyNewsMessage(selectedVideo)}</p>
                   ) : (
                     <div className="space-y-2">
                       {(newsByVideoId[selectedVideo.youtube_video_id] || []).slice(0, 4).map((article, idx) => (
@@ -631,7 +660,7 @@ export default function DashboardPage() {
                   {stocksLoadingVideoId === selectedVideo.youtube_video_id ? (
                     <p className="text-sm text-gray-400 animate-pulse">분석 중...</p>
                   ) : (stocksByVideoId[selectedVideo.youtube_video_id] || []).length === 0 ? (
-                    <p className="text-sm text-gray-400">관련 종목을 찾지 못했습니다.</p>
+                    <p className="text-sm text-gray-400">{getEmptyStocksMessage(selectedVideo)}</p>
                   ) : (
                     <div className="space-y-2">
                       {(stocksByVideoId[selectedVideo.youtube_video_id] || []).map((stock) => {

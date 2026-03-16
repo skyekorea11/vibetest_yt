@@ -1237,6 +1237,7 @@ export async function GET(
       return NextResponse.json({ success: false, error: 'Video not found' }, { status: 404 })
     }
     const { stockMode: channelStockMode, newsMode: channelNewsMode } = await getChannelModes(video.youtube_channel_id)
+    const channelModes = { stock: channelStockMode, news: channelNewsMode }
 
     const titleText = (video.title || '').trim()
     const summaryText = (video.summary_text || '').trim()
@@ -1249,6 +1250,7 @@ export async function GET(
         reason: 'non_investment_content',
         articles: [],
         stocks: [],
+        channelModes,
       })
     }
     const baseText = `${titleText} ${summaryText}`.trim()
@@ -1287,6 +1289,7 @@ export async function GET(
         cached: true,
         articles: shouldSuppressNewsByChannel ? [] : (video.related_news || []),
         stocks: shouldSuppressStocksByChannel ? [] : cachedStocks,
+        channelModes,
       })
     }
 
@@ -1303,6 +1306,7 @@ export async function GET(
         cached: false,
         articles: shouldSuppressNewsByChannel ? [] : articles,
         stocks,
+        channelModes,
       })
     }
 
@@ -1316,6 +1320,7 @@ export async function GET(
         cached: false,
         articles: shouldSuppressNewsByChannel ? [] : (video.related_news || []),
         stocks,
+        channelModes,
       })
     }
 
@@ -1375,7 +1380,7 @@ export async function GET(
       const [geminiStocks, taxonomyStocks] = await Promise.all([stocksPromise, taxonomyStocksPromise])
       const stocks = buildStockCandidates({ titleText, summaryText, geminiStocks, taxonomyStocks, channelStockMode })
       void videoRepository.updateRelatedNews(videoId, [], stocks)
-      return NextResponse.json({ success: true, cached: false, articles: [], stocks })
+      return NextResponse.json({ success: true, cached: false, articles: [], stocks, channelModes })
     }
 
     // 뉴스 fetch와 Gemini 종목 추론을 병렬 실행
@@ -1478,6 +1483,7 @@ export async function GET(
       query: queryUsed,
       articles,
       stocks,
+      channelModes,
     })
   } catch (error) {
     console.error('Error fetching related news:', error)
