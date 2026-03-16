@@ -15,6 +15,8 @@ import { useSummaryPreferences } from '@/hooks/useVideo'
 import AppShell from '@/components/AppShell'
 import { Settings, CheckCircle, AlertCircle, Plus, Trash2 } from 'lucide-react'
 
+type ChannelStockMode = 'auto' | 'low_stock' | 'off'
+
 export default function SettingsPage() {
   const { showSummary, updateShowSummary, enableTranscriptPipeline, updateEnableTranscriptPipeline } = useSummaryPreferences()
 
@@ -24,6 +26,7 @@ export default function SettingsPage() {
   const [newsChannelRegion, setNewsChannelRegion] = useState<'domestic' | 'overseas'>('domestic')
   const [isNewsChannelSaving, setIsNewsChannelSaving] = useState(false)
   const [newsChannelMessage, setNewsChannelMessage] = useState<string>('')
+  const [savingStockModeIds, setSavingStockModeIds] = useState<Set<string>>(new Set())
   const [transcriptProviderInfo, setTranscriptProviderInfo] = useState<{ name: string; available: boolean }>({ name: '...', available: false })
   const [summarizerInfo, setSummarizerInfo] = useState<{ name: string; available: boolean }>({ name: '...', available: false })
   const [refreshStatus, setRefreshStatus] = useState<RefreshStatus>({
@@ -133,6 +136,29 @@ export default function SettingsPage() {
     }
   }
 
+  const handleChannelStockModeChange = async (
+    youtubeChannelId: string,
+    stockMode: ChannelStockMode
+  ) => {
+    setSavingStockModeIds(prev => new Set(prev).add(youtubeChannelId))
+    const prevChannels = channels
+    setChannels(prev => prev.map(ch => (
+      ch.youtube_channel_id === youtubeChannelId ? { ...ch, stock_mode: stockMode } : ch
+    )))
+    try {
+      const success = await channelRepository.updateStockMode(youtubeChannelId, stockMode)
+      if (!success) {
+        setChannels(prevChannels)
+      }
+    } finally {
+      setSavingStockModeIds(prev => {
+        const next = new Set(prev)
+        next.delete(youtubeChannelId)
+        return next
+      })
+    }
+  }
+
   const summarizerStatusText = (() => {
     const name = (summarizerInfo.name || '').toLowerCase()
     if (!summarizerInfo.available) {
@@ -166,7 +192,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="space-y-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 max-w-2xl">
+        <div id="news-channels" className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 max-w-2xl scroll-mt-20">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">뉴스 채널 관리</h2>
           <p className="text-sm text-gray-500 mb-4">대시보드 우측 최신 뉴스 패널에서 사용할 채널만 별도로 관리합니다.</p>
 
@@ -233,8 +259,48 @@ export default function SettingsPage() {
           )}
         </div>
 
+        <div id="channel-stock-mode" className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 max-w-2xl scroll-mt-20">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">채널별 관련주 모드</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            auto: 자동 추천, low_stock: 뉴스 우선(종목 최소), off: 관련주 비활성화
+          </p>
+          {channels.length === 0 ? (
+            <p className="text-sm text-gray-400">등록된 채널이 없습니다.</p>
+          ) : (
+            <div className="space-y-2">
+              {channels.map((channel) => {
+                const stockMode = (channel.stock_mode || 'auto') as ChannelStockMode
+                const isSaving = savingStockModeIds.has(channel.youtube_channel_id)
+                return (
+                  <div key={channel.youtube_channel_id} className="flex items-center gap-3 rounded-lg border border-gray-200 px-3 py-2">
+                    {channel.thumbnail_url ? (
+                      <img src={channel.thumbnail_url} alt={channel.title} className="w-8 h-8 rounded object-cover border border-gray-100" />
+                    ) : (
+                      <div className="w-8 h-8 rounded bg-gray-100" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-gray-800 truncate">{channel.title}</p>
+                      <p className="text-xs text-gray-400 truncate">{channel.handle || channel.youtube_channel_id}</p>
+                    </div>
+                    <select
+                      value={stockMode}
+                      onChange={(e) => void handleChannelStockModeChange(channel.youtube_channel_id, e.target.value as ChannelStockMode)}
+                      disabled={isSaving}
+                      className="rounded-lg border border-gray-300 px-2 py-1.5 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-60"
+                    >
+                      <option value="auto">auto</option>
+                      <option value="low_stock">low_stock</option>
+                      <option value="off">off</option>
+                    </select>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
         {/* Display preferences */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 max-w-2xl">
+        <div id="display-preferences" className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 max-w-2xl scroll-mt-20">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">표시 설정</h2>
 
           <div className="space-y-4">
@@ -266,7 +332,7 @@ export default function SettingsPage() {
         </div>
 
         {/* System information */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div id="system-info" className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 scroll-mt-20">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">시스템 정보</h2>
 
           <div className="space-y-6">
@@ -315,7 +381,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Environment setup */}
-        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+        <div id="environment-setup" className="bg-gray-50 border border-gray-200 rounded-2xl p-6 scroll-mt-20">
           <h2 className="text-lg font-bold text-gray-800 mb-3">환경 설정</h2>
           <div className="text-sm text-gray-600 space-y-2">
             <p>다음 환경 변수를 설정하여 모든 기능을 활성화하세요:</p>
@@ -331,7 +397,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Advanced configuration */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div id="advanced-settings" className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 scroll-mt-20">
           <h2 className="text-2xl font-bold text-gray-900 mb-3">고급 설정</h2>
           <p className="text-gray-500 mb-6">
             다음 기능들은 선택 사항이며, 추가 설정이 필요합니다:

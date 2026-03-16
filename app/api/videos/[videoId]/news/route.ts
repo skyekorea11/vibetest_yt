@@ -43,6 +43,8 @@ interface TaxonomyContext {
   taxonomyId: string
 }
 
+type ChannelStockMode = 'auto' | 'low_stock' | 'off'
+
 const VALID_MARKETS = ['KOSPI', 'KOSDAQ', 'NYSE', 'NASDAQ', 'HKEX', 'TSE', 'TWSE'] as const
 const VALID_MARKET_SET = new Set<string>(VALID_MARKETS)
 
@@ -66,6 +68,22 @@ let taxonomyCache: {
   mappingRows: TaxonomyIndustryRow[]
   stockRows: StockExampleRow[]
 } | null = null
+
+async function getChannelStockMode(youtubeChannelId: string): Promise<ChannelStockMode> {
+  try {
+    const { data, error } = await supabase
+      .from('channels')
+      .select('stock_mode')
+      .eq('youtube_channel_id', youtubeChannelId)
+      .single()
+    if (error) return 'auto'
+    const mode = data?.stock_mode
+    if (mode === 'off' || mode === 'low_stock' || mode === 'auto') return mode
+    return 'auto'
+  } catch {
+    return 'auto'
+  }
+}
 
 function parseCsvRows(text: string): Record<string, string>[] {
   const lines = text.split(/\r?\n/).filter(Boolean)
@@ -930,12 +948,15 @@ function buildStockCandidates(params: {
   summaryText: string
   geminiStocks: StockSuggestion[] | null
   taxonomyStocks: StockSuggestion[]
+  channelStockMode?: ChannelStockMode
 }): StockSuggestion[] {
-  const { titleText, summaryText, geminiStocks, taxonomyStocks } = params
+  const { titleText, summaryText, geminiStocks, taxonomyStocks, channelStockMode = 'auto' } = params
   const baseText = `${titleText} ${summaryText}`.trim()
   const normalized = baseText.toLowerCase().replace(/\s+/g, '')
+  if (channelStockMode === 'off') return []
   const isLowStockTopic = LOW_STOCK_TOPIC_KEYWORDS.some((kw) => normalized.includes(kw))
   const isHumanitiesLowStockTopic = HUMANITIES_LOW_STOCK_KEYWORDS.some((kw) => normalized.includes(kw))
+  const isChannelLowStockTopic = channelStockMode === 'low_stock'
   const isScienceTopic = SCIENCE_TOPIC_KEYWORDS.some((kw) => normalized.includes(kw))
   const isStarlinkTelecomTopic =
     ['스타링크', 'starlink', '스페이스x', 'spacex', '위성통신', '위성네트워크', '버라이즌', 'verizon', 'at&t', 'att', 'atnt', '통신업계']
@@ -947,7 +968,7 @@ function buildStockCandidates(params: {
     ? findRelatedStocks(baseText, isStarlinkTelecomTopic ? 6 : 3)
     : []
 
-  if (isLowStockTopic || isHumanitiesLowStockTopic) {
+  if (isLowStockTopic || isHumanitiesLowStockTopic || isChannelLowStockTopic) {
     // 국제개발/거버넌스형 콘텐츠는 특정 종목 매핑 신뢰도가 낮아 종목 추천을 비활성화한다.
     return []
   }
@@ -1203,6 +1224,7 @@ export async function GET(
     if (!video) {
       return NextResponse.json({ success: false, error: 'Video not found' }, { status: 404 })
     }
+    const channelStockMode = await getChannelStockMode(video.youtube_channel_id)
 
     const titleText = (video.title || '').trim()
     const summaryText = (video.summary_text || '').trim()
@@ -1235,19 +1257,25 @@ export async function GET(
     const refreshNews = refreshNewsOnly || forceRefresh
     const hasCachedArticles = Array.isArray(video.related_news) && video.related_news.length > 0
     const cachedStocks = Array.isArray(video.related_stocks) ? (video.related_stocks as StockSuggestion[]) : []
-    if (!forceRefresh && !refreshStocksOnly && !refreshNews && hasCachedArticles && cachedStocks.length >= 3) {
+    const shouldSuppressStocksByChannel = channelStockMode === 'off' || channelStockMode === 'low_stock'
+    if (shouldSuppressStocksByChannel && cachedStocks.length > 0) {
+      void videoRepository.updateRelatedNews(videoId, (video.related_news as unknown[]) || [], [])
+    }
+    if (!forceRefresh && !refreshStocksOnly && !refreshNews && hasCachedArticles && (
+      shouldSuppressStocksByChannel || cachedStocks.length >= 3
+    )) {
       return NextResponse.json({
         success: true,
         cached: true,
         articles: video.related_news,
-        stocks: cachedStocks,
+        stocks: shouldSuppressStocksByChannel ? [] : cachedStocks,
       })
     }
 
     // 종목만 새로고침: 기사 캐시는 유지하고 종목만 재계산
     if (refreshStocksOnly) {
       const [geminiStocks, taxonomyStocks] = await Promise.all([stocksPromise, taxonomyStocksPromise])
-      const stocks = buildStockCandidates({ titleText, summaryText, geminiStocks, taxonomyStocks })
+      const stocks = buildStockCandidates({ titleText, summaryText, geminiStocks, taxonomyStocks, channelStockMode })
       const articles = hasCachedArticles ? (video.related_news as unknown[]) : []
       void videoRepository.updateRelatedNews(videoId, articles, stocks)
       return NextResponse.json({
@@ -1261,7 +1289,7 @@ export async function GET(
     // 과거 캐시에 종목이 빈약한 경우(0~2개)는 종목만 재계산해 캐시 보정
     if (!forceRefresh && hasCachedArticles && cachedStocks.length < 3) {
       const [geminiStocks, taxonomyStocks] = await Promise.all([stocksPromise, taxonomyStocksPromise])
-      const stocks = buildStockCandidates({ titleText, summaryText, geminiStocks, taxonomyStocks })
+      const stocks = buildStockCandidates({ titleText, summaryText, geminiStocks, taxonomyStocks, channelStockMode })
       void videoRepository.updateRelatedNews(videoId, video.related_news as unknown[], stocks)
       return NextResponse.json({
         success: true,
@@ -1325,7 +1353,7 @@ export async function GET(
     }
     if (queryCandidates.length === 0) {
       const [geminiStocks, taxonomyStocks] = await Promise.all([stocksPromise, taxonomyStocksPromise])
-      const stocks = buildStockCandidates({ titleText, summaryText, geminiStocks, taxonomyStocks })
+      const stocks = buildStockCandidates({ titleText, summaryText, geminiStocks, taxonomyStocks, channelStockMode })
       void videoRepository.updateRelatedNews(videoId, [], stocks)
       return NextResponse.json({ success: true, cached: false, articles: [], stocks })
     }
@@ -1415,7 +1443,7 @@ export async function GET(
     let stocks: StockSuggestion[] = cachedStocks
     if (!refreshNewsOnly || forceRefresh || cachedStocks.length === 0) {
       const [geminiStocks, taxonomyStocks] = await Promise.all([stocksPromise, taxonomyStocksPromise])
-      stocks = buildStockCandidates({ titleText, summaryText, geminiStocks, taxonomyStocks })
+      stocks = buildStockCandidates({ titleText, summaryText, geminiStocks, taxonomyStocks, channelStockMode })
     }
 
     // DB에 캐시 저장 (fire-and-forget)

@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS public.channels (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   youtube_channel_id TEXT NOT NULL UNIQUE,
   title TEXT NOT NULL,
+  stock_mode TEXT NOT NULL DEFAULT 'auto',
   handle TEXT,
   description TEXT,
   thumbnail_url TEXT,
@@ -18,6 +19,9 @@ CREATE TABLE IF NOT EXISTS public.channels (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE public.channels
+  ADD COLUMN IF NOT EXISTS stock_mode TEXT NOT NULL DEFAULT 'auto';
 
 -- Create videos table
 CREATE TABLE IF NOT EXISTS public.videos (

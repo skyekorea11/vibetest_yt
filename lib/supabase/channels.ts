@@ -89,6 +89,27 @@ export const channelRepository = {
     }
   },
 
+  async updateStockMode(
+    youtubeChannelId: string,
+    stockMode: 'auto' | 'low_stock' | 'off'
+  ): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('channels')
+        .update({
+          stock_mode: stockMode,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('youtube_channel_id', youtubeChannelId)
+
+      if (error) throw error
+      return true
+    } catch (error) {
+      console.error('Error updating channel stock mode:', error)
+      return false
+    }
+  },
+
   /**
    * Delete channel by YouTube channel ID
    */

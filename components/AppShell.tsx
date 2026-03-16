@@ -12,6 +12,15 @@ const NAV_ITEMS = [
   { label: '설정',     href: '/settings' },
 ] as const
 
+const SETTINGS_MENU = [
+  { label: '뉴스 채널', href: '/settings#news-channels' },
+  { label: '채널별 관련주', href: '/settings#channel-stock-mode' },
+  { label: '표시 설정', href: '/settings#display-preferences' },
+  { label: '시스템 정보', href: '/settings#system-info' },
+  { label: '환경 설정', href: '/settings#environment-setup' },
+  { label: '고급 설정', href: '/settings#advanced-settings' },
+] as const
+
 interface AppShellProps {
   children: React.ReactNode
   channels?: Channel[]
@@ -34,6 +43,7 @@ export default function AppShell({
   onManualRefresh,
 }: AppShellProps) {
   const pathname = usePathname()
+  const isSettingsPage = pathname === '/settings'
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
@@ -43,7 +53,7 @@ export default function AppShell({
 
         {/* Header */}
         <div className="h-14 flex items-center px-5 font-semibold text-lg border-b border-gray-200 text-gray-800">
-          Channels
+          {isSettingsPage ? 'Settings' : 'Channels'}
         </div>
 
         {/* Nav links */}
@@ -66,69 +76,87 @@ export default function AppShell({
           })}
         </div>
 
-        {/* Channel Add */}
-        <div className="px-4 py-3 border-b border-gray-100">
-          <ChannelAddForm onSuccess={onChannelAdded} compact />
-        </div>
-
-        {/* New video notification */}
-        {newVideoCount > 0 && (
-          <div className="mx-3 mt-2 px-3 py-2 bg-blue-50 rounded-lg text-xs text-blue-600 font-medium">
-            새 영상 {newVideoCount}개 업데이트됨
-          </div>
-        )}
-
-        {/* Channel List */}
-        <div className="flex-1 overflow-y-auto px-3 py-3">
-          {channels.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-sm text-gray-400 text-center">
-              아직 등록된 채널이 없습니다
-            </div>
-          ) : (
+        {isSettingsPage ? (
+          <div className="flex-1 overflow-y-auto px-3 py-3">
             <div className="space-y-1.5">
-              {channels.map((channel) => (
-                <div
-                  key={channel.youtube_channel_id}
-                  onClick={() => onChannelSelected?.(channel.youtube_channel_id)}
-                  className="rounded-lg border border-gray-200 bg-white px-2.5 py-2 cursor-pointer hover:bg-gray-50 transition-colors"
+              {SETTINGS_MENU.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="block rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-start gap-2">
-                    {channel.thumbnail_url ? (
-                      <img
-                        src={channel.thumbnail_url}
-                        alt={channel.title}
-                        className="w-7 h-7 rounded-md object-cover flex-shrink-0 border border-gray-100"
-                      />
-                    ) : (
-                      <div className="w-7 h-7 rounded-md bg-gray-100 flex-shrink-0" />
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <div className="font-medium text-[13px] text-gray-800 truncate">
-                        {channel.title}
-                      </div>
-                      {channel.handle ? (
-                        <div className="text-[11px] text-gray-400 truncate mt-0.5">
-                          {channel.handle}
-                        </div>
-                      ) : null}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onChannelRemoved?.(channel.youtube_channel_id)
-                      }}
-                      className="rounded-md p-1 text-gray-300 hover:bg-red-50 hover:text-red-500 transition-colors text-xs leading-none"
-                      title="채널 삭제"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                </div>
+                  {item.label}
+                </Link>
               ))}
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <>
+            {/* Channel Add */}
+            <div className="px-4 py-3 border-b border-gray-100">
+              <ChannelAddForm onSuccess={onChannelAdded} compact />
+            </div>
+
+            {/* New video notification */}
+            {newVideoCount > 0 && (
+              <div className="mx-3 mt-2 px-3 py-2 bg-blue-50 rounded-lg text-xs text-blue-600 font-medium">
+                새 영상 {newVideoCount}개 업데이트됨
+              </div>
+            )}
+
+            {/* Channel List */}
+            <div className="flex-1 overflow-y-auto px-3 py-3">
+              {channels.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-sm text-gray-400 text-center">
+                  아직 등록된 채널이 없습니다
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  {channels.map((channel) => (
+                    <div
+                      key={channel.youtube_channel_id}
+                      onClick={() => onChannelSelected?.(channel.youtube_channel_id)}
+                      className="rounded-lg border border-gray-200 bg-white px-2.5 py-2 cursor-pointer hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-start gap-2">
+                        {channel.thumbnail_url ? (
+                          <img
+                            src={channel.thumbnail_url}
+                            alt={channel.title}
+                            className="w-7 h-7 rounded-md object-cover flex-shrink-0 border border-gray-100"
+                          />
+                        ) : (
+                          <div className="w-7 h-7 rounded-md bg-gray-100 flex-shrink-0" />
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <div className="font-medium text-[13px] text-gray-800 truncate">
+                            {channel.title}
+                          </div>
+                          {channel.handle ? (
+                            <div className="text-[11px] text-gray-400 truncate mt-0.5">
+                              {channel.handle}
+                            </div>
+                          ) : null}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onChannelRemoved?.(channel.youtube_channel_id)
+                          }}
+                          className="rounded-md p-1 text-gray-300 hover:bg-red-50 hover:text-red-500 transition-colors text-xs leading-none"
+                          title="채널 삭제"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
       </aside>
 
