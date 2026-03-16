@@ -255,7 +255,7 @@ export default function SettingsPage() {
         </div>
 
         <div id="channel-stock-mode" className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 max-w-2xl scroll-mt-20">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">채널별 관련주 모드</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">채널별 기사/주식 추천 강도</h2>
           <p className="text-sm text-gray-500 mb-4">
             채널별로 관련주/기사 추천 강도를 직접 제어할 수 있습니다.
           </p>
@@ -281,20 +281,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="flex flex-col gap-1">
-                        <label className="text-[10px] font-semibold text-gray-500">관련주 모드</label>
-                        <select
-                          value={stockMode}
-                          onChange={(e) => void handleChannelStockModeChange(channel.youtube_channel_id, e.target.value as ChannelStockMode)}
-                          disabled={isSavingStockMode}
-                          className="rounded-lg border border-gray-300 px-2 py-1.5 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-60 min-w-[108px]"
-                        >
-                          <option value="auto">auto</option>
-                          <option value="low_stock">low_stock</option>
-                          <option value="off">off</option>
-                        </select>
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <label className="text-[10px] font-semibold text-gray-500">기사 모드</label>
+                        <label className="text-[10px] font-semibold text-gray-500">기사 표시</label>
                         <select
                           value={newsMode}
                           onChange={(e) => void handleChannelNewsModeChange(channel.youtube_channel_id, e.target.value as ChannelNewsMode)}
@@ -303,6 +290,19 @@ export default function SettingsPage() {
                         >
                           <option value="auto">auto</option>
                           <option value="strict">strict</option>
+                          <option value="off">off</option>
+                        </select>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] font-semibold text-gray-500">주식 표시</label>
+                        <select
+                          value={stockMode}
+                          onChange={(e) => void handleChannelStockModeChange(channel.youtube_channel_id, e.target.value as ChannelStockMode)}
+                          disabled={isSavingStockMode}
+                          className="rounded-lg border border-gray-300 px-2 py-1.5 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-60 min-w-[108px]"
+                        >
+                          <option value="auto">auto</option>
+                          <option value="low_stock">low_stock</option>
                           <option value="off">off</option>
                         </select>
                       </div>
