@@ -56,6 +56,7 @@ export default function FavoritesPage() {
   const [togglingIds, setTogglingIds] = useState<Set<string>>(new Set())
 
   const [selectedTicker, setSelectedTicker] = useState<TabKey>('all')
+  const [showAllStockTabs, setShowAllStockTabs] = useState(false)
   const [notesByVideoId, setNotesByVideoId] = useState<Record<string, string>>({})
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null)
   const [editingNoteText, setEditingNoteText] = useState('')
@@ -316,6 +317,13 @@ export default function FavoritesPage() {
     () => favoriteVideos.find(v => v.youtube_video_id === selectedVideoId) || null,
     [favoriteVideos, selectedVideoId]
   )
+  const featuredTickers = useMemo(() => sortedTickers.slice(0, 8), [sortedTickers])
+  const hiddenTickers = useMemo(() => sortedTickers.slice(8), [sortedTickers])
+  const selectedTickerIsHidden =
+    typeof selectedTicker === 'string' &&
+    selectedTicker !== 'all' &&
+    selectedTicker !== 'uncategorized' &&
+    hiddenTickers.includes(selectedTicker)
 
   const shellProps = {
     channels,
@@ -517,45 +525,111 @@ export default function FavoritesPage() {
       ) : (
         <div className="space-y-6">
 
-          {/* Tab bar */}
-          <div className="flex flex-wrap gap-1.5">
-            <button
-              onClick={() => setSelectedTicker('all')}
-              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                selectedTicker === 'all'
-                  ? 'bg-gray-800 text-white'
-                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-              }`}
-            >
-              전체 {favoriteVideos.length}
-            </button>
-            {sortedTickers.map(ticker => {
-              const entry = stockVideoMap.get(ticker)!
-              return (
-                <button
-                  key={ticker}
-                  onClick={() => setSelectedTicker(ticker)}
-                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                    selectedTicker === ticker
-                      ? 'bg-gray-800 text-white'
-                      : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                  }`}
-                >
-                  {entry.stock.name} {entry.videos.length}
-                </button>
-              )
-            })}
-            {ungroupedVideos.length > 0 && (
+          {/* Compact tab bar */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
               <button
-                onClick={() => setSelectedTicker('uncategorized')}
+                onClick={() => setSelectedTicker('all')}
                 className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  selectedTicker === 'uncategorized'
+                  selectedTicker === 'all'
                     ? 'bg-gray-800 text-white'
                     : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                 }`}
               >
-                미분류 {ungroupedVideos.length}
+                전체 {favoriteVideos.length}
               </button>
+              {ungroupedVideos.length > 0 && (
+                <button
+                  onClick={() => setSelectedTicker('uncategorized')}
+                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    selectedTicker === 'uncategorized'
+                      ? 'bg-gray-800 text-white'
+                      : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                  }`}
+                >
+                  미분류 {ungroupedVideos.length}
+                </button>
+              )}
+              <div className="ml-auto">
+                <select
+                  value={
+                    selectedTicker === 'all' || selectedTicker === 'uncategorized'
+                      ? ''
+                      : selectedTicker
+                  }
+                  onChange={(e) => {
+                    const value = e.target.value
+                    if (value) setSelectedTicker(value)
+                  }}
+                  className="h-9 rounded-lg border border-gray-200 px-2.5 text-sm text-gray-600 bg-white"
+                >
+                  <option value="">종목 선택</option>
+                  {sortedTickers.map((ticker) => {
+                    const entry = stockVideoMap.get(ticker)!
+                    return (
+                      <option key={ticker} value={ticker}>
+                        {entry.stock.name} ({entry.videos.length})
+                      </option>
+                    )
+                  })}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+              {featuredTickers.map((ticker) => {
+                const entry = stockVideoMap.get(ticker)!
+                return (
+                  <button
+                    key={ticker}
+                    onClick={() => setSelectedTicker(ticker)}
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                      selectedTicker === ticker
+                        ? 'bg-gray-800 text-white'
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                    }`}
+                  >
+                    {entry.stock.name} {entry.videos.length}
+                  </button>
+                )
+              })}
+              {selectedTickerIsHidden && (
+                <button
+                  onClick={() => setShowAllStockTabs(true)}
+                  className="flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium bg-gray-800 text-white"
+                >
+                  {stockVideoMap.get(selectedTicker as string)?.stock.name || selectedTicker}
+                </button>
+              )}
+              {hiddenTickers.length > 0 && (
+                <button
+                  onClick={() => setShowAllStockTabs((prev) => !prev)}
+                  className="flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:bg-gray-50"
+                >
+                  {showAllStockTabs ? '접기' : `종목 더보기 ${hiddenTickers.length}`}
+                </button>
+              )}
+            </div>
+
+            {showAllStockTabs && hiddenTickers.length > 0 && (
+              <div className="rounded-xl border border-gray-200 bg-white p-2 flex flex-wrap gap-1.5">
+                {hiddenTickers.map((ticker) => {
+                  const entry = stockVideoMap.get(ticker)!
+                  return (
+                    <button
+                      key={ticker}
+                      onClick={() => setSelectedTicker(ticker)}
+                      className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
+                        selectedTicker === ticker
+                          ? 'bg-gray-800 text-white'
+                          : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                      }`}
+                    >
+                      {entry.stock.name} {entry.videos.length}
+                    </button>
+                  )
+                })}
+              </div>
             )}
           </div>
 

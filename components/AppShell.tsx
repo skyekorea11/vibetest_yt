@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, LayoutDashboard, Heart, Settings } from 'lucide-react'
@@ -25,6 +25,8 @@ const COLLAPSED_NAV_ITEMS = [
   { label: '즐겨찾기', href: '/favorites', icon: Heart },
   { label: '설정', href: '/settings', icon: Settings },
 ] as const
+
+const DESKTOP_SIDEBAR_OPEN_KEY = 'yt.desktopSidebarOpen.v1'
 
 interface AppShellProps {
   children: React.ReactNode
@@ -191,12 +193,46 @@ function CollapsedSidebarRail({
   onOpen: () => void
   mobile?: boolean
 }) {
+  if (mobile) {
+    return (
+      <aside className="fixed inset-x-0 bottom-0 z-40 flex lg:hidden h-14 bg-white border-t border-gray-200 px-2">
+        <div className="w-full h-full flex items-center justify-between">
+          <button
+            type="button"
+            onClick={onOpen}
+            className="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50"
+            aria-label="사이드바 열기"
+          >
+            <Menu size={16} />
+          </button>
+          <div className="flex items-center gap-1">
+            {COLLAPSED_NAV_ITEMS.map((item) => {
+              const Icon = item.icon
+              const isActive = pathname === item.href
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`inline-flex items-center justify-center w-10 h-10 rounded-md border transition-colors ${
+                    isActive
+                      ? 'border-gray-300 bg-gray-100 text-gray-900'
+                      : 'border-gray-200 text-gray-500 hover:bg-gray-50'
+                  }`}
+                  title={item.label}
+                  aria-label={item.label}
+                >
+                  <Icon size={15} />
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      </aside>
+    )
+  }
+
   return (
-    <aside
-      className={`w-12 shrink-0 bg-white border-r border-gray-200 items-start justify-start pt-3 ${
-        mobile ? 'fixed inset-y-0 left-0 z-40 flex lg:hidden' : 'hidden lg:flex'
-      }`}
-    >
+    <aside className="hidden lg:flex w-12 shrink-0 bg-white border-r border-gray-200 items-start justify-start pt-3">
       <div className="w-full flex flex-col items-center gap-2">
         <button
           type="button"
@@ -246,6 +282,21 @@ export default function AppShell({
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(DESKTOP_SIDEBAR_OPEN_KEY)
+      if (saved === '0') setDesktopSidebarOpen(false)
+      if (saved === '1') setDesktopSidebarOpen(true)
+    } catch {}
+  }, [])
+
+  const updateDesktopSidebarOpen = (open: boolean) => {
+    setDesktopSidebarOpen(open)
+    try {
+      localStorage.setItem(DESKTOP_SIDEBAR_OPEN_KEY, open ? '1' : '0')
+    } catch {}
+  }
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
       <aside
@@ -261,11 +312,11 @@ export default function AppShell({
           onChannelAdded={onChannelAdded}
           onChannelRemoved={onChannelRemoved}
           onChannelSelected={onChannelSelected}
-          onClose={() => setDesktopSidebarOpen(false)}
+          onClose={() => updateDesktopSidebarOpen(false)}
         />
       </aside>
       {!desktopSidebarOpen && (
-        <CollapsedSidebarRail pathname={pathname} onOpen={() => setDesktopSidebarOpen(true)} />
+        <CollapsedSidebarRail pathname={pathname} onOpen={() => updateDesktopSidebarOpen(true)} />
       )}
 
       {mobileSidebarOpen && (
@@ -276,8 +327,8 @@ export default function AppShell({
         />
       )}
       <aside
-        className={`lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-gray-200 flex flex-col overflow-hidden transition-transform duration-200 ${
-          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`lg:hidden fixed inset-x-0 bottom-0 z-50 h-[75vh] max-h-[640px] bg-white border-t border-gray-200 rounded-t-2xl flex flex-col overflow-hidden transition-transform duration-200 ${
+          mobileSidebarOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
         <SidebarContent
@@ -295,7 +346,7 @@ export default function AppShell({
 
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <TopNav nextRefresh={nextRefresh} onManualRefresh={onManualRefresh} />
-        <main className="flex-1 overflow-y-auto p-5">{children}</main>
+        <main className="flex-1 overflow-y-auto p-5 pb-20 lg:pb-5">{children}</main>
       </div>
 
       {!mobileSidebarOpen && (
