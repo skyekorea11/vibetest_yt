@@ -28,7 +28,7 @@ export const summaryService = {
     return Number(process.env.CHUNK_SUMMARY_MAX_CHUNKS || '6')
   },
   isDescriptionFallbackEnabled(): boolean {
-    return process.env.ALLOW_DESCRIPTION_FALLBACK === 'true'
+    return (process.env.ALLOW_DESCRIPTION_FALLBACK || 'true').toLowerCase() !== 'false'
   },
 
   extractExternalSummaryFromHtml(html: string): string | null {
@@ -190,7 +190,6 @@ export const summaryService = {
     forceRefresh = false
   ): Promise<{ text: string; sourceType: 'transcript' | 'description' | 'external' } | null> {
     try {
-      const allowDescriptionFallback = this.isDescriptionFallbackEnabled()
       const video = await videoRepository.getByYouTubeId(videoId)
 
       // 이미 완성된 transcript 요약이 있으면 바로 반환
@@ -218,9 +217,7 @@ export const summaryService = {
           const upgrade = await this.generateTranscriptSummary(videoId, video.transcript_text)
           if (upgrade) return upgrade
         }
-        if (allowDescriptionFallback) {
-          return { text: video.summary_text || '', sourceType: 'description' }
-        }
+        return { text: video.summary_text || '', sourceType: 'description' }
       }
 
       // 파이프라인 꺼져 있고 description 요약 있으면 반환
@@ -231,9 +228,7 @@ export const summaryService = {
         video.summary_status === 'complete' &&
         video.summary_source_type === 'description'
       ) {
-        if (allowDescriptionFallback) {
-          return { text: video.summary_text || '', sourceType: 'description' }
-        }
+        return { text: video.summary_text || '', sourceType: 'description' }
       }
 
       // transcript는 있는데 요약이 없거나 refresh 필요한 경우
@@ -260,17 +255,12 @@ export const summaryService = {
     useTranscriptPipeline = true
   ): Promise<{ text: string; sourceType: 'transcript' | 'description' | 'external' } | null> {
     try {
-      const allowDescriptionFallback = this.isDescriptionFallbackEnabled()
       const preferExternal = this.isExternalSummaryPreferred()
       const fallbackToDescription = async () => {
         const external = await this.generateExternalSummary(videoId, title, description)
         if (external) return external
-        if (allowDescriptionFallback) {
-          return this.generateDescriptionSummary(videoId, title, description)
-        }
-        const message = '자막/외부 요약을 확보하지 못했습니다'
-        await videoRepository.updateSummary(videoId, message, 'transcript', 'failed')
-        return { text: message, sourceType: 'transcript' as const }
+        // Safety fallback: keep the card usable even when transcript/external sources fail.
+        return this.generateDescriptionSummary(videoId, title, description)
       }
 
       // Prefer external summaries (briefyou -> summarize.tech) before transcript pipeline when enabled.
@@ -320,12 +310,7 @@ export const summaryService = {
 
       const external = await this.generateExternalSummary(videoId, title, description)
       if (external) return external
-      if (allowDescriptionFallback) {
-        return await this.generateDescriptionSummary(videoId, title, description)
-      }
-      const message = '자막/외부 요약을 확보하지 못했습니다'
-      await videoRepository.updateSummary(videoId, message, 'transcript', 'failed')
-      return { text: message, sourceType: 'transcript' as const }
+      return await this.generateDescriptionSummary(videoId, title, description)
     } catch (error) {
       console.error('[summary] Error generating new summary:', error)
       return null
