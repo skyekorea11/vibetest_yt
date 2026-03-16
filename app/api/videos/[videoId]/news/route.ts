@@ -223,7 +223,7 @@ const STOCK_KEYWORD_MAP: Array<{
   { keywords: ['백화점명품', '명품관', '럭셔리유통', '신세계백화점'], ticker: '004170', name: '신세계', market: 'KOSPI' },
   // 식음료 / 음료 / 밀크티
   { keywords: ['밀크티', '버블티', '음료', '음료브랜드', '식음료', '공차'], ticker: '005300', name: '롯데칠성', market: 'KOSPI' },
-  { keywords: ['차백도', '헤이티', '차지', '중국밀크티', '중국음료', '중국식음료', '중국브랜드'], ticker: '2150.HK', name: 'Nayuki', market: 'HKEX' },
+  { keywords: ['차백도', '헤이티', 'chagee', '중국밀크티', '중국음료', '중국식음료', '중국브랜드'], ticker: '2150.HK', name: 'Nayuki', market: 'HKEX' },
   { keywords: ['홍콩주식', '홍콩브랜드', '중화권브랜드'], ticker: '9633.HK', name: 'Nongfu Spring', market: 'HKEX' },
   { keywords: ['일본음료', '일본브랜드', '일본밀크티'], ticker: '2587.T', name: 'Suntory Beverage & Food', market: 'TSE' },
   { keywords: ['대만음료', '대만브랜드', '대만밀크티'], ticker: '1216.TW', name: 'Uni-President', market: 'TWSE' },
@@ -381,6 +381,21 @@ const DEFAULT_SUPPLEMENT_STOCKS: Array<Omit<StockSuggestion, 'is_core'>> = [
   { ticker: '000660', name: 'SK하이닉스', market: 'KOSPI' },
 ]
 
+const SCIENCE_SUPPLEMENT_STOCKS: Array<Omit<StockSuggestion, 'is_core'>> = [
+  { ticker: 'RKLB', name: 'Rocket Lab', market: 'NASDAQ' },
+  { ticker: 'IRDM', name: 'Iridium Communications', market: 'NASDAQ' },
+  { ticker: 'ASTS', name: 'AST SpaceMobile', market: 'NASDAQ' },
+  { ticker: 'LMT', name: 'Lockheed Martin', market: 'NYSE' },
+  { ticker: 'BA', name: 'Boeing', market: 'NYSE' },
+  { ticker: '047810', name: '한국항공우주', market: 'KOSPI' },
+]
+
+const SCIENCE_TOPIC_KEYWORDS = [
+  '과학', '천문학', '천체', '우주', '외계', '물리', '화학', '생물', '지구과학',
+  '지질', '지진', '핵융합', '원자력', '양자', '로봇', '인공지능', '통계', '데이터사이언스',
+  '신경과학', '뇌과학', '기후', '환경과학', '생명체', '신호포착',
+]
+
 function ensureMinStocks(stocks: StockSuggestion[], minCount = 6): StockSuggestion[] {
   if (stocks.length === 0 || stocks.length >= minCount) return stocks
 
@@ -390,6 +405,25 @@ function ensureMinStocks(stocks: StockSuggestion[], minCount = 6): StockSuggesti
   const seen = new Set(stocks.map(s => s.ticker))
 
   for (const stock of [...supplement, ...DEFAULT_SUPPLEMENT_STOCKS]) {
+    if (merged.length >= minCount) break
+    if (seen.has(stock.ticker)) continue
+    seen.add(stock.ticker)
+    merged.push({ ...stock, is_core: false })
+  }
+
+  return merged.map((item, idx) => ({ ...item, is_core: idx === 0 }))
+}
+
+function ensureMinStocksFromList(
+  stocks: StockSuggestion[],
+  supplement: Array<Omit<StockSuggestion, 'is_core'>>,
+  minCount = 6
+): StockSuggestion[] {
+  if (stocks.length === 0 || stocks.length >= minCount) return stocks
+  const merged: StockSuggestion[] = [...stocks]
+  const seen = new Set(stocks.map((s) => s.ticker))
+
+  for (const stock of supplement) {
     if (merged.length >= minCount) break
     if (seen.has(stock.ticker)) continue
     seen.add(stock.ticker)
@@ -890,6 +924,7 @@ function buildStockCandidates(params: {
   const { titleText, summaryText, geminiStocks, taxonomyStocks } = params
   const baseText = `${titleText} ${summaryText}`.trim()
   const normalized = baseText.toLowerCase().replace(/\s+/g, '')
+  const isScienceTopic = SCIENCE_TOPIC_KEYWORDS.some((kw) => normalized.includes(kw))
   const isStarlinkTelecomTopic =
     ['스타링크', 'starlink', '스페이스x', 'spacex', '위성통신', '위성네트워크', '버라이즌', 'verizon', 'at&t', 'att', 'atnt', '통신업계']
       .some(kw => normalized.includes(kw))
@@ -899,6 +934,16 @@ function buildStockCandidates(params: {
   const keywordStocks = useKeywordFallback
     ? findRelatedStocks(baseText, isStarlinkTelecomTopic ? 6 : 3)
     : []
+
+  if (isScienceTopic) {
+    // 과학 주제는 규칙 기반 분류를 우선하고, 금융/유통 등 잡음이 큰 LLM 보강은 배제한다.
+    const scienceDeterministic = mergeStockGroups([sectorStocks, taxonomyStocks, keywordStocks], 6)
+    const scienceBase = scienceDeterministic.length > 0
+      ? scienceDeterministic
+      : mergeStockGroups([SCIENCE_SUPPLEMENT_STOCKS.map((s) => ({ ...s, is_core: false }))], 6)
+    const scienceFilled = ensureMinStocksFromList(scienceBase, SCIENCE_SUPPLEMENT_STOCKS, 6)
+    return prioritizeCoreByTitle(scienceFilled, titleText)
+  }
 
   const deterministicStocks = mergeStockGroups([taxonomyStocks, sectorStocks, keywordStocks], 6)
 
