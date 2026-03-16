@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "precompute": "ts-node ./lib/scripts/precompute.ts",
-    "taxonomy:push": "ts-node ./lib/scripts/push-taxonomy-to-supabase.ts"
+    "taxonomy:push": "ts-node ./lib/scripts/push-taxonomy-to-supabase.ts",
+    "transcripts:sync": "ts-node ./lib/scripts/sync-transcripts-to-supabase.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
