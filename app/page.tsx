@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Heart } from 'lucide-react'
+import { Heart, RefreshCw } from 'lucide-react'
 import { Channel, Video } from '@/types'
 import { channelRepository } from '@/lib/supabase/channels'
 import { videoRepository, videoFavoriteRepository } from '@/lib/supabase/videos'
@@ -65,9 +65,6 @@ export default function DashboardPage() {
   })
   const [newsByVideoId, setNewsByVideoId] = useState<Record<string, RelatedNewsItem[]>>({})
   const [stocksByVideoId, setStocksByVideoId] = useState<Record<string, StockSuggestion[]>>({})
-  const [mobileDetailPanels, setMobileDetailPanels] = useState<
-    Record<string, { news: boolean; stocks: boolean }>
-  >({})
   const [newsCacheKeyByVideoId, setNewsCacheKeyByVideoId] = useState<Record<string, string>>({})
   const [newsLoadingVideoId, setNewsLoadingVideoId] = useState<string | null>(null)
   const [stocksLoadingVideoId, setStocksLoadingVideoId] = useState<string | null>(null)
@@ -83,6 +80,10 @@ export default function DashboardPage() {
   const { enableTranscriptPipeline } = useSummaryPreferences()
   const channelTitleById = useMemo(
     () => new Map(channels.map((channel) => [channel.youtube_channel_id, channel.title])),
+    [channels]
+  )
+  const channelThumbById = useMemo(
+    () => new Map(channels.map((channel) => [channel.youtube_channel_id, channel.thumbnail_url || ''])),
     [channels]
   )
   const channelModeById = useMemo(
@@ -414,34 +415,18 @@ export default function DashboardPage() {
       await loadData()
     },
     onChannelSelected: (id: string) => setSelectedChannelId(id),
-    nextRefresh:       refreshStatus.nextRefresh,
     newVideoCount:     refreshStatus?.newVideoCount ?? 0,
     onManualRefresh:   handleManualRefresh,
-  }
-
-  const toggleMobilePanel = (videoId: string, panel: 'news' | 'stocks') => {
-    setMobileDetailPanels((prev) => {
-      const current = prev[videoId] || { news: false, stocks: false }
-      return {
-        ...prev,
-        [videoId]: {
-          ...current,
-          [panel]: !current[panel],
-        },
-      }
-    })
   }
 
   const renderVideoDetail = (video: Video) => (
     <div className="space-y-3.5">
       {(() => {
-        const mobileNewsOpen = mobileDetailPanels[video.youtube_video_id]?.news ?? false
-        const mobileStocksOpen = mobileDetailPanels[video.youtube_video_id]?.stocks ?? false
         return (
           <>
-      <div className="flex items-start justify-between gap-3 pb-1 border-b border-gray-100">
+      <div className="flex items-start justify-between gap-3 pb-1 border-b border-slate-200">
         <div className="min-w-0 flex-1">
-          <h2 className="text-lg font-bold text-gray-900 leading-snug line-clamp-2 min-h-[3.5rem]">
+          <h2 className="text-lg font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[3.5rem]">
             {video.title}
           </h2>
           <div className="mt-1 flex items-center gap-1.5 text-xs min-h-[1rem]">
@@ -459,7 +444,7 @@ export default function DashboardPage() {
         <button
           onClick={() => toggleFavorite(video.youtube_video_id)}
           disabled={togglingIds.has(video.youtube_video_id)}
-          className="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+          className="ui-btn ui-btn-icon flex-shrink-0 disabled:opacity-50"
           title={favoriteIds.has(video.youtube_video_id) ? '즐겨찾기 해제' : '즐겨찾기 추가'}
           aria-label={favoriteIds.has(video.youtube_video_id) ? '즐겨찾기 해제' : '즐겨찾기 추가'}
         >
@@ -473,7 +458,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="space-y-2.5">
-        <div className="border border-gray-200 rounded-xl overflow-hidden">
+        <div className="border border-slate-200/80 bg-white/60 rounded-xl overflow-hidden">
           <iframe
             src={`https://www.youtube.com/embed/${video.youtube_video_id}`}
             className="w-full aspect-video"
@@ -481,22 +466,22 @@ export default function DashboardPage() {
           />
         </div>
 
-        <div className="border border-gray-200 rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-gray-800 mb-2">영상 요약</h3>
+        <div className="border border-slate-200/80 bg-white/60 rounded-xl p-4">
+          <h3 className="ui-title-sm text-gray-800 mb-2">영상 요약</h3>
           {video.transcript_status === 'not_available' ? (
-            <p className="text-sm text-gray-500">아직 자막을 추출할 수 없습니다.</p>
+            <p className="ui-text-body text-gray-500">아직 자막을 추출할 수 없습니다.</p>
           ) : video.transcript_status === 'pending' ? (
-            <p className="text-sm text-gray-500 animate-pulse">자막 추출 중...</p>
+            <p className="ui-text-body text-gray-500 animate-pulse">자막 추출 중...</p>
           ) : video.summary_status === 'failed' && video.summary_text ? (
-            <p className="text-sm text-gray-600">{video.summary_text}</p>
+            <p className="ui-text-body text-gray-600">{video.summary_text}</p>
           ) : video.summary_status === 'complete' && video.summary_text ? (
-              <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
+              <p className="ui-text-body text-gray-700 whitespace-pre-line leading-relaxed">
               {video.summary_text}
             </p>
           ) : isSummaryLoading ? (
-            <p className="text-sm text-gray-500 animate-pulse">요약 생성 중...</p>
+            <p className="ui-text-body text-gray-500 animate-pulse">요약 생성 중...</p>
           ) : (
-            <p className="text-sm text-gray-500">아직 요약이 없습니다</p>
+            <p className="ui-text-body text-gray-500">아직 요약이 없습니다</p>
           )}
         </div>
 
@@ -504,7 +489,7 @@ export default function DashboardPage() {
           <button
             onClick={() => handleRefreshSummary(video.youtube_video_id)}
             disabled={isSummaryLoading}
-            className="tone-primary-btn px-4 py-2 text-sm font-medium rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="tone-primary-btn ui-btn disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {isSummaryLoading
               ? video.transcript_status === 'pending'
@@ -520,7 +505,7 @@ export default function DashboardPage() {
             href={`https://youtube.com/watch?v=${video.youtube_video_id}`}
             target="_blank"
             rel="noreferrer"
-            className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+            className="ui-btn"
           >
             유튜브 보기
           </a>
@@ -528,40 +513,36 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <div className="border border-gray-200 rounded-xl p-4">
+        <div className="border border-slate-200/80 bg-white/60 rounded-xl p-4">
           <div className="mb-2 flex items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-gray-800">관련 뉴스</h3>
+            <h3 className="ui-title-sm text-gray-800">관련 뉴스</h3>
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => {
                   const cacheKey = `${video.summary_text || ''}|${video.title || ''}`
                   void loadRelatedNews(video.youtube_video_id, cacheKey, 'news')
                 }}
-                className="text-xs px-2 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+                className="ui-btn-ghost-icon"
+                title="관련 뉴스 새로고침"
+                aria-label="관련 뉴스 새로고침"
               >
-                새로고침
-              </button>
-              <button
-                onClick={() => toggleMobilePanel(video.youtube_video_id, 'news')}
-                className="xl:hidden text-xs px-2 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                {mobileNewsOpen ? '접기' : '펼치기'}
+                <RefreshCw size={14} />
               </button>
             </div>
           </div>
-          <div className={`${mobileNewsOpen ? 'block' : 'hidden'} xl:block`}>
+          <div>
             {newsLoadingVideoId === video.youtube_video_id ? (
-              <p className="text-sm text-gray-500 animate-pulse">관련 뉴스를 찾는 중...</p>
+              <p className="ui-text-body text-gray-500 animate-pulse">관련 뉴스를 찾는 중...</p>
             ) : newsErrorByVideoId[video.youtube_video_id] ? (
-              <p className="text-sm text-gray-500">{newsErrorByVideoId[video.youtube_video_id]}</p>
+              <p className="ui-text-body text-gray-500">{newsErrorByVideoId[video.youtube_video_id]}</p>
             ) : (newsByVideoId[video.youtube_video_id] || []).length === 0 ? (
-              <p className="text-sm text-gray-500">{getEmptyNewsMessage(video)}</p>
+              <p className="ui-text-body text-gray-500">{getEmptyNewsMessage(video)}</p>
             ) : (
               <div className="space-y-2">
                 {(newsByVideoId[video.youtube_video_id] || []).slice(0, 4).map((article, idx) => (
                   <div
                     key={`${article.link}-${idx}`}
-                    className="block rounded-lg border border-gray-100 px-3 py-2 hover:bg-gray-50 transition-colors"
+                    className="block rounded-lg border border-slate-200/70 px-3 py-2 hover:bg-slate-50 transition-colors"
                   >
                     <div className="flex items-start gap-2">
                       <a
@@ -570,15 +551,15 @@ export default function DashboardPage() {
                         rel="noreferrer"
                         className="flex-1 min-w-0"
                       >
-                      <p className="text-sm font-medium text-gray-900 line-clamp-2">{article.title}</p>
-                      <p className="mt-1 text-xs text-gray-500">
+                      <p className="ui-title-md text-gray-900 line-clamp-2">{article.title}</p>
+                      <p className="mt-1 ui-text-meta text-gray-500">
                           {article.source}
                           {formatPublishedDate(article.publishedAt) ? ` · ${formatPublishedDate(article.publishedAt)}` : ''}
                         </p>
                       </a>
                       <button
                         onClick={() => toggleArticleFavorite(video.youtube_video_id, article.link)}
-                        className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                        className="p-1 rounded-md hover:bg-slate-100 transition-colors"
                         title="기사 좋아요"
                       >
                         <Heart
@@ -596,32 +577,28 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="border border-gray-200 rounded-xl p-4">
+        <div className="border border-slate-200/80 bg-white/60 rounded-xl p-4">
           <div className="mb-2 flex items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-gray-800">관련 종목</h3>
+            <h3 className="ui-title-sm text-gray-800">관련 종목</h3>
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => {
                   const cacheKey = `${video.summary_text || ''}|${video.title || ''}`
                   void loadRelatedNews(video.youtube_video_id, cacheKey, 'stocks')
                 }}
-                className="text-xs px-2 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+                className="ui-btn-ghost-icon"
+                title="관련 종목 새로고침"
+                aria-label="관련 종목 새로고침"
               >
-                종목 새로고침
-              </button>
-              <button
-                onClick={() => toggleMobilePanel(video.youtube_video_id, 'stocks')}
-                className="xl:hidden text-xs px-2 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                {mobileStocksOpen ? '접기' : '펼치기'}
+                <RefreshCw size={14} />
               </button>
             </div>
           </div>
-          <div className={`${mobileStocksOpen ? 'block' : 'hidden'} xl:block`}>
+          <div>
             {stocksLoadingVideoId === video.youtube_video_id ? (
-              <p className="text-sm text-gray-500 animate-pulse">분석 중...</p>
+              <p className="ui-text-body text-gray-500 animate-pulse">분석 중...</p>
             ) : (stocksByVideoId[video.youtube_video_id] || []).length === 0 ? (
-              <p className="text-sm text-gray-500">{getEmptyStocksMessage(video)}</p>
+              <p className="ui-text-body text-gray-500">{getEmptyStocksMessage(video)}</p>
             ) : (
               <div className="space-y-2">
                 {(stocksByVideoId[video.youtube_video_id] || []).map((stock) => {
@@ -640,20 +617,20 @@ export default function DashboardPage() {
                       href={href}
                       target="_blank"
                       rel="noreferrer"
-                      className={`flex items-center justify-between rounded-lg border px-3 py-2 transition-colors ${
+                      className={`flex items-center justify-between gap-2 rounded-lg border px-3 py-2 transition-colors ${
                         stock.is_core
                           ? 'border-amber-300 hover:bg-amber-50/30'
-                          : 'border-gray-100 hover:bg-gray-50'
+                          : 'border-slate-200/70 hover:bg-slate-50'
                       }`}
                     >
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 min-w-0 flex-1">
                         {stock.is_core && (
-                          <span className="inline-flex items-center shrink-0 whitespace-nowrap text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-400 text-white">핵심</span>
+                          <span className="inline-flex items-center shrink-0 whitespace-nowrap text-[16px] leading-none text-amber-600 dark:text-amber-300">✨</span>
                         )}
-                          <span className="text-sm font-medium text-gray-900">{stock.name}</span>
+                        <span className="ui-title-md text-gray-900 truncate">{stock.name}</span>
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs text-gray-500">{stock.ticker}</span>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <span className="ui-text-meta text-gray-500">{stock.ticker}</span>
                         <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${marketBadge}`}>
                           {stock.market}
                         </span>
@@ -678,11 +655,11 @@ export default function DashboardPage() {
 
   return (
     <AppShell {...shellProps}>
-      <div className="grid grid-cols-1 xl:grid-cols-[380px_minmax(0,1fr)_320px] gap-5 xl:text-slate-900">
+      <div className="grid grid-cols-1 xl:grid-cols-[350px_minmax(0,1fr)_280px] gap-4 xl:text-slate-900">
 
         {/* ── 좌측: 영상 목록 ──────────────────────────────────────────── */}
         <div
-          className="border border-slate-300 rounded-2xl bg-slate-50 shadow-sm overflow-y-auto"
+          className="border border-slate-200/80 rounded-2xl bg-white/80 shadow-[0_2px_8px_rgba(15,23,42,0.05)] overflow-y-auto"
           style={{ maxHeight: panelMaxHeight }}
           onScroll={(e) => {
             const el = e.currentTarget
@@ -698,8 +675,6 @@ export default function DashboardPage() {
               const isFav = favoriteIds.has(video.youtube_video_id)
 
               return (
-                // ✅ 수정: 바깥 <button> → <div role="button">으로 교체
-                //    내부에 <button>(하트)이 있으므로 중첩 button 에러 방지
                 <div
                   key={video.youtube_video_id}
                   role="button"
@@ -715,51 +690,52 @@ export default function DashboardPage() {
                       prev === video.youtube_video_id ? null : video.youtube_video_id
                     )
                   }
-                  className={`dashboard-video-item
-                    w-full text-left p-4 transition-colors cursor-pointer
+                  className={`dashboard-video-item group
+                    w-full text-left px-3 py-3 transition-colors cursor-pointer
                     ${idx !== 0 ? 'border-t border-slate-200' : ''}
-                    ${isSelected ? 'dashboard-video-selected border-l-4 pl-3' : 'hover:bg-slate-100'}
+                    ${isSelected ? 'dashboard-video-selected border-l-4 pl-2.5 bg-slate-100/70' : 'hover:bg-slate-50/80'}
                   `}
                 >
-                  <div className="flex gap-2.5">
-                    <img
-                      src={video.thumbnail_url}
-                      alt={video.title}
-                      className="w-22 h-12 object-cover rounded-lg flex-shrink-0 border border-gray-100"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start gap-1.5">
-                        <h3 className="flex-1 text-[14px] font-semibold text-gray-900 line-clamp-2 leading-snug">
-                          {video.title}
-                        </h3>
-                        {/* 하트 버튼 */}
-                        <button
-                          onClick={(e) => { e.stopPropagation(); toggleFavorite(video.youtube_video_id) }}
-                          disabled={togglingIds.has(video.youtube_video_id)}
-                        className="flex-shrink-0 p-1 rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50"
-                          title={isFav ? '즐겨찾기 해제' : '즐겨찾기 추가'}
-                        >
-                          <Heart
-                            size={14}
-                            className={isFav ? 'text-red-400 fill-red-400' : 'text-gray-300'}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start gap-2">
+                      <h3 className="flex-1 flex items-start gap-1.5 text-[13px] font-semibold text-gray-900 leading-snug min-h-[2.4rem]">
+                        {channelThumbById.get(video.youtube_channel_id) ? (
+                          <img
+                            src={channelThumbById.get(video.youtube_channel_id)}
+                            alt={getChannelDisplayName(video)}
+                            className="w-4 h-4 rounded object-cover border border-slate-200 shrink-0 mt-0.5"
                           />
-                        </button>
-                      </div>
-                      <p className={`video-meta-text mt-1 text-xs truncate ${isSelected ? 'text-slate-700' : 'text-gray-500'}`}>
-                        {getChannelDisplayName(video)}
-                      </p>
-                      <p className={`video-meta-text mt-0.5 text-xs flex items-center gap-1 ${isSelected ? 'text-slate-700' : 'text-gray-500'}`}>
-                        {isNewVideo(video) && (
-                          <span className="px-1 py-0.5 bg-blue-100 text-blue-600 rounded text-[10px] font-semibold leading-none">New</span>
+                        ) : (
+                          <span className="w-4 h-4 rounded bg-slate-200 border border-slate-200 shrink-0 mt-0.5" />
                         )}
+                        <span className="line-clamp-2">{video.title}</span>
+                      </h3>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleFavorite(video.youtube_video_id) }}
+                        disabled={togglingIds.has(video.youtube_video_id)}
+                        className="flex-shrink-0 p-1 rounded-md opacity-80 hover:opacity-100 hover:bg-slate-100 transition-colors disabled:opacity-50"
+                        title={isFav ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+                      >
+                        <Heart
+                          size={13}
+                          className={isFav ? 'text-red-400 fill-red-400' : 'text-gray-300'}
+                        />
+                      </button>
+                    </div>
+                    <div className={`video-meta-text mt-1 pl-[22px] flex items-center gap-2 text-[11px] ${isSelected ? 'text-slate-700' : 'text-gray-500'}`}>
+                      <span className="truncate flex-1">{getChannelDisplayName(video)}</span>
+                      {isNewVideo(video) && (
+                        <span className="inline-flex h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" title="신규 영상" />
+                      )}
+                      <span className="shrink-0 tabular-nums">
                         {new Date(video.published_at).toLocaleDateString('ko-KR')}
-                      </p>
+                      </span>
                     </div>
                   </div>
 
                   {isSelected && (
                     <div
-                      className="xl:hidden mt-3 border-t border-gray-200 pt-3"
+                      className="xl:hidden mt-3 border-t border-slate-200 pt-3"
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
                     >
@@ -774,7 +750,7 @@ export default function DashboardPage() {
 
         {/* ── 가운데: 영상 상세 ────────────────────────────────────────── */}
         <div
-          className="hidden xl:block border border-slate-300 rounded-2xl bg-slate-50 shadow-sm p-6 overflow-y-auto"
+          className="hidden xl:block border border-slate-200/80 rounded-2xl bg-white/80 shadow-[0_2px_8px_rgba(15,23,42,0.05)] p-5 overflow-y-auto"
           style={{ maxHeight: panelMaxHeight }}
         >
           {selectedVideo ? (
@@ -789,17 +765,19 @@ export default function DashboardPage() {
 
         {/* ── 우측: 뉴스 채널 최신 제목 ───────────────────────────────── */}
         <aside
-          className="border border-slate-300 rounded-2xl bg-slate-50 shadow-sm p-4 xl:sticky xl:top-24 overflow-y-auto"
+          className="border border-slate-200/80 rounded-2xl bg-white/80 shadow-[0_2px_8px_rgba(15,23,42,0.05)] p-3.5 xl:sticky xl:top-24 overflow-y-auto"
           style={{ maxHeight: panelMaxHeight }}
         >
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-gray-800">뉴스 채널 최신 제목</h3>
+            <h3 className="text-base font-semibold text-gray-800">최신 뉴스</h3>
             <button
               onClick={() => void loadNewsChannelPanel(true)}
               disabled={newsPanelLoading}
-              className="text-xs px-2 py-1 rounded border border-slate-300 text-slate-700 hover:bg-slate-100 disabled:opacity-40 transition-colors"
+              className="ui-btn-ghost-icon disabled:opacity-40"
+              title="최신 뉴스 새로고침"
+              aria-label="최신 뉴스 새로고침"
             >
-              새로고침
+              <RefreshCw size={14} className={newsPanelLoading ? 'animate-spin' : ''} />
             </button>
           </div>
 
@@ -812,21 +790,21 @@ export default function DashboardPage() {
           ) : (
             <div className="mt-3 space-y-4">
               <div>
-                <p className="mb-2 text-xs font-semibold text-gray-500">국내 최신 Top 10</p>
-                <div className="space-y-2">
+                <p className="mb-2 text-sm font-semibold text-gray-600">국내 최신 Top 10</p>
+                <div className="space-y-0.5">
                   {domesticNewsItems.slice(0, 10).map((item, idx, arr) => (
                     <a
                       key={`dom-${item.youtubeVideoId}-${idx}`}
                       href={item.videoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="block rounded-lg border border-gray-100 p-2.5 hover:bg-gray-50 transition-colors"
+                      className="block rounded-lg px-2 py-1 hover:bg-gray-50 transition-colors"
                     >
                       <div className="flex items-center gap-1.5">
                         <span className={`inline-flex w-10 justify-center px-1 py-0.5 rounded text-[10px] font-semibold tabular-nums leading-none whitespace-nowrap ${newsTimeBadgeClass(idx, arr.length)}`}>
                           {formatTimeHHmm(item.publishedAt)}
                         </span>
-                        <p className="text-[13px] font-medium text-gray-800 line-clamp-1 flex-1 min-w-0">{item.title}</p>
+                        <p className="text-sm font-normal text-gray-700 line-clamp-1 flex-1 min-w-0">{item.title}</p>
                       </div>
                     </a>
                   ))}
@@ -837,21 +815,21 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                <p className="mb-2 text-xs font-semibold text-gray-500">해외 최신 Top 10</p>
-                <div className="space-y-2">
+                <p className="mb-2 text-sm font-semibold text-gray-600">해외 최신 Top 10</p>
+                <div className="space-y-0.5">
                   {overseasNewsItems.slice(0, 10).map((item, idx, arr) => (
                     <a
                       key={`ovr-${item.youtubeVideoId}-${idx}`}
                       href={item.videoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="block rounded-lg border border-gray-100 p-2.5 hover:bg-gray-50 transition-colors"
+                      className="block rounded-lg px-2 py-1 hover:bg-gray-50 transition-colors"
                     >
                       <div className="flex items-center gap-1.5">
                         <span className={`inline-flex w-10 justify-center px-1 py-0.5 rounded text-[10px] font-semibold tabular-nums leading-none whitespace-nowrap ${newsTimeBadgeClass(idx, arr.length)}`}>
                           {formatTimeHHmm(item.publishedAt)}
                         </span>
-                        <p className="text-[13px] font-medium text-gray-800 line-clamp-1 flex-1 min-w-0">{item.title}</p>
+                        <p className="text-sm font-normal text-gray-700 line-clamp-1 flex-1 min-w-0">{item.title}</p>
                       </div>
                     </a>
                   ))}

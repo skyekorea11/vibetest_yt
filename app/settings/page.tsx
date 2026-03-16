@@ -176,7 +176,6 @@ export default function SettingsPage() {
     <AppShell
       channels={channels}
       onChannelAdded={loadChannels}
-      nextRefresh={refreshStatus.nextRefresh}
       newVideoCount={refreshStatus.newVideoCount}
       onManualRefresh={handleManualRefresh}
     >

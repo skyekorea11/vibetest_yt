@@ -4,12 +4,11 @@
 
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { Play, RefreshCw, Moon, Sun, Palette } from 'lucide-react'
 
 interface TopNavProps {
-  nextRefresh?: string | null
   onManualRefresh?: () => Promise<void>
   mode: 'light' | 'dark'
   tone: 'cool' | 'beige'
@@ -18,62 +17,14 @@ interface TopNavProps {
 }
 
 export default function TopNav({
-  nextRefresh,
   onManualRefresh,
   mode,
   tone,
   onModeToggle,
   onToneToggle,
 }: TopNavProps) {
-  const [countdown, setCountdown] = useState('')
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [cooldownActive, setCooldownActive] = useState(false)
-  const fallbackNextRefreshRef = useRef<string>(new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString())
-  const [effectiveNextRefresh, setEffectiveNextRefresh] = useState<string>(fallbackNextRefreshRef.current)
-
-  useEffect(() => {
-    if (!nextRefresh) {
-      setEffectiveNextRefresh(fallbackNextRefreshRef.current)
-      return
-    }
-    const next = new Date(nextRefresh)
-    if (Number.isNaN(next.getTime())) {
-      setEffectiveNextRefresh(fallbackNextRefreshRef.current)
-      return
-    }
-    fallbackNextRefreshRef.current = nextRefresh
-    setEffectiveNextRefresh(nextRefresh)
-  }, [nextRefresh])
-
-  useEffect(() => {
-    const update = () => {
-      const target = new Date(effectiveNextRefresh).getTime()
-      if (Number.isNaN(target)) {
-        setCountdown('--:--:--')
-        return
-      }
-      let diff = target - Date.now()
-      if (diff <= 0) {
-        const next = new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString()
-        fallbackNextRefreshRef.current = next
-        setEffectiveNextRefresh(next)
-        diff = new Date(next).getTime() - Date.now()
-      }
-      const hh = Math.floor(diff / 3600000)
-        .toString()
-        .padStart(2, '0')
-      const mm = Math.floor((diff % 3600000) / 60000)
-        .toString()
-        .padStart(2, '0')
-      const ss = Math.floor((diff % 60000) / 1000)
-        .toString()
-        .padStart(2, '0')
-      setCountdown(`${hh}:${mm}:${ss}`)
-    }
-    update()
-    const id = setInterval(update, 1000)
-    return () => clearInterval(id)
-  }, [effectiveNextRefresh])
 
   const handleManualRefresh = useCallback(async () => {
     if (isRefreshing || cooldownActive || !onManualRefresh) return
@@ -107,24 +58,19 @@ export default function TopNav({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex flex-col items-end text-slate-700 px-1 py-0.5">
-              <span className="text-[10px] font-bold tracking-wide leading-none">갱신까지</span>
-              <span className="text-sm font-bold tabular-nums leading-tight tracking-tight">{countdown || '--:--:--'}</span>
-            </div>
             {onManualRefresh && (
               <button
                 onClick={handleManualRefresh}
                 disabled={isRefreshing || cooldownActive}
-                className="inline-flex items-center justify-center w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-1.5 gap-0 sm:gap-1.5 rounded-lg border border-slate-300 text-sm text-slate-700 hover:bg-slate-100 disabled:opacity-40 transition-colors"
+                className="ui-btn ui-btn-icon sm:w-auto sm:min-w-0 sm:px-3 sm:gap-1.5 disabled:opacity-40"
                 title={cooldownActive ? '1분 후 다시 시도 가능' : '지금 새로고침'}
               >
                 <RefreshCw size={13} className={isRefreshing ? 'animate-spin' : ''} />
-                <span className="hidden sm:inline">갱신</span>
               </button>
             )}
             <button
               onClick={onModeToggle}
-              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors"
+              className="ui-btn ui-btn-icon"
               title={modeLabel}
               aria-label={modeLabel}
             >
@@ -132,7 +78,7 @@ export default function TopNav({
             </button>
             <button
               onClick={onToneToggle}
-              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors"
+              className="ui-btn ui-btn-icon"
               title={toneLabel}
               aria-label={toneLabel}
             >

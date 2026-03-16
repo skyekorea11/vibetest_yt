@@ -58,7 +58,7 @@ const TAXONOMY_RULES: Array<{ keywords: string[]; target: { sector: string; cate
   { keywords: ['수능', '입시', '학원', '영어'], target: { sector: 'Education', category: 'K-12', subcategory: 'Suneung' } },
   { keywords: ['암세포', '암환자', '항암', '종양', '병원', '식이요법'], target: { sector: 'Healthcare', category: 'Pharma', subcategory: 'Oncology' } },
   { keywords: ['비타민', '미네랄', '영양소', '과일식사', '영양관리', '건강식단'], target: { sector: 'Healthcare', category: 'Nutrition', subcategory: 'Medical Nutrition' } },
-  { keywords: ['이란', '호르무즈', '기뢰', '미사일'], target: { sector: 'AerospaceDefense', category: 'Defense', subcategory: 'Missile' } },
+  { keywords: ['이란', '호르무즈', '기뢰', '미사일', '러시아', '우크라이나', '돈바스', '푸틴'], target: { sector: 'AerospaceDefense', category: 'Defense', subcategory: 'Missile' } },
   { keywords: ['이더리움', 'eth'], target: { sector: 'DigitalAssets', category: 'Crypto Market', subcategory: 'Ethereum' } },
   { keywords: ['비트코인', 'btc', '코인', '암호화폐', '가상자산'], target: { sector: 'DigitalAssets', category: 'Crypto Market', subcategory: 'Bitcoin' } },
   { keywords: ['해킹', '백도어', '랜섬웨어', '제로데이', '악성코드'], target: { sector: 'CyberSecurity', category: 'Threat', subcategory: 'Hacking' } },
@@ -264,6 +264,9 @@ const STOCK_KEYWORD_MAP: Array<{
   // 방산 / 항공
   { keywords: ['방산', '무기', 'k2전차', 'k9자주포', '방위산업', '군수'], ticker: '012450', name: '한화에어로스페이스', market: 'KOSPI' },
   { keywords: ['한국항공우주', 'kai', '항공기', 'fa50', 'kf21'], ticker: '047810', name: '한국항공우주', market: 'KOSPI' },
+  { keywords: ['러시아', '우크라이나', '돈바스', '푸틴', '전쟁', '군사긴장', '확전', '휴전협상'], ticker: '079550', name: 'LIG넥스원', market: 'KOSPI' },
+  { keywords: ['러시아', '우크라이나', '돈바스', '푸틴', '나토', '군비', '군수'], ticker: '012450', name: '한화에어로스페이스', market: 'KOSPI' },
+  { keywords: ['러시아', '우크라이나', '돈바스', '포탄', '탄약', '군사충돌'], ticker: '103140', name: '풍산', market: 'KOSPI' },
   // 원전 / 에너지
   { keywords: ['원전', '원자력', '핵발전', 'smr', '소형원전', '두산에너빌리티'], ticker: '034020', name: '두산에너빌리티', market: 'KOSPI' },
   // 글로벌 빅테크 / AI
@@ -522,6 +525,7 @@ const SECTOR_RULES: Array<{
     keywords: [
       '이란', '기뢰', '호르무즈', '해협봉쇄', '중동', '전면전', '군사충돌',
       '공습', '미사일', '공격', '확전', '미해군', '전쟁위기', '해상봉쇄',
+      '러시아', '우크라이나', '돈바스', '푸틴', '크렘린', '나토', '군비경쟁', '휴전협상',
     ],
     stocks: [
       { ticker: '012450', name: '한화에어로스페이스', market: 'KOSPI' },
@@ -927,13 +931,19 @@ function prioritizeCoreByTitle(stocks: StockSuggestion[], title: string): StockS
   const isStarlinkTelecomTopic =
     ['스타링크', 'starlink', '스페이스x', 'spacex', '위성통신', '통신업계', '통신독점']
       .some(kw => normalizedTitle.includes(kw))
+  const isGeopoliticsDefenseTopic =
+    ['러시아', '우크라이나', '돈바스', '푸틴', '나토', '전쟁', '군사충돌', '확전']
+      .some(kw => normalizedTitle.includes(kw))
 
-  if (!isOverseasMilkTeaTopic && !isFoodCartelTopic && !isStarlinkTelecomTopic) return stocks
+  if (!isOverseasMilkTeaTopic && !isFoodCartelTopic && !isStarlinkTelecomTopic && !isGeopoliticsDefenseTopic) return stocks
 
   const foreignPriority = ['2150.HK', '9633.HK', '2587.T', '1216.TW', 'KO', 'PEP', 'SBUX']
   const foodCartelPriority = ['097950', '001130', '145990', '271560', '280360', '004370']
   const starlinkTelecomPriority = ['RKLB', 'ASTS', 'IRDM', 'VZ', 'T', 'TMUS', '017670', '030200']
-  const priority = isStarlinkTelecomTopic
+  const geopoliticsDefensePriority = ['012450', '079550', '047810', '103140', 'LMT', 'RTX']
+  const priority = isGeopoliticsDefenseTopic
+    ? geopoliticsDefensePriority
+    : isStarlinkTelecomTopic
     ? starlinkTelecomPriority
     : (isFoodCartelTopic ? foodCartelPriority : foreignPriority)
   const byTicker = new Map(stocks.map(s => [s.ticker, s] as const))

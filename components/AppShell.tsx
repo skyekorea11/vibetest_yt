@@ -36,7 +36,6 @@ interface AppShellProps {
   onChannelAdded?: () => void
   onChannelRemoved?: (channelId: string) => void
   onChannelSelected?: (channelId: string) => void
-  nextRefresh?: string | null
   newVideoCount?: number
   onManualRefresh?: () => Promise<void>
 }
@@ -72,7 +71,7 @@ function SidebarContent({
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-slate-300 text-slate-600 hover:bg-slate-100"
+            className="ui-btn ui-btn-icon ui-btn-sm"
             aria-label="사이드바 닫기"
           >
             ✕
@@ -108,7 +107,7 @@ function SidebarContent({
                 key={item.href}
                 href={item.href}
                 onClick={onNavigate}
-                className="block rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                className="block rounded-lg border border-slate-200 bg-white px-3 py-2 ui-title-sm text-slate-700 hover:bg-slate-50 transition-colors"
               >
                 {item.label}
               </Link>
@@ -202,7 +201,7 @@ function CollapsedSidebarRail({
           <button
             type="button"
             onClick={onOpen}
-            className="inline-flex items-center justify-center w-10 h-10 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100"
+            className="ui-btn ui-btn-icon"
             aria-label="사이드바 열기"
           >
             <Menu size={16} />
@@ -239,7 +238,7 @@ function CollapsedSidebarRail({
         <button
           type="button"
           onClick={onOpen}
-          className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100"
+          className="ui-btn ui-btn-icon ui-btn-sm"
           aria-label="사이드바 열기"
         >
           <Menu size={16} />
@@ -275,7 +274,6 @@ export default function AppShell({
   onChannelAdded,
   onChannelRemoved,
   onChannelSelected,
-  nextRefresh,
   newVideoCount = 0,
   onManualRefresh,
 }: AppShellProps) {
@@ -387,7 +385,6 @@ export default function AppShell({
 
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <TopNav
-          nextRefresh={nextRefresh}
           onManualRefresh={onManualRefresh}
           mode={mode}
           tone={tone}

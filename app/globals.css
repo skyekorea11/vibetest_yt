@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --ui-btn-bg: #ffffff;
+  --ui-btn-bg-hover: #f8fafc;
+  --ui-btn-border: #cbd5e1;
+  --ui-btn-text: #334155;
   --font-geist-sans: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-geist-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
@@ -20,6 +24,82 @@ body {
   font-family: var(--font-geist-sans);
 }
 
+.ui-title-sm {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.ui-title-md {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.ui-text-body {
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.ui-text-meta {
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  height: 2.125rem;
+  padding: 0 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--ui-btn-border);
+  background: var(--ui-btn-bg);
+  color: var(--ui-btn-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, opacity 150ms ease;
+}
+
+.ui-btn:hover {
+  background: var(--ui-btn-bg-hover);
+}
+
+.ui-btn-sm {
+  height: 1.875rem;
+  padding: 0 0.625rem;
+  font-size: 0.75rem;
+}
+
+.ui-btn-icon {
+  width: 2.125rem;
+  min-width: 2.125rem;
+  padding: 0;
+}
+
+.ui-btn-ghost-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #64748b;
+  transition: color 150ms ease, background-color 150ms ease, opacity 150ms ease;
+}
+
+.ui-btn-ghost-icon:hover {
+  color: #334155;
+  background: rgba(148, 163, 184, 0.12);
+}
+
 .tone-primary-btn {
   background-color: #1e293b;
   color: #ffffff;
@@ -33,6 +113,10 @@ body {
 html.dark {
   --background: #020617;
   --foreground: #e2e8f0;
+  --ui-btn-bg: #0f172a;
+  --ui-btn-bg-hover: #1e293b;
+  --ui-btn-border: #334155;
+  --ui-btn-text: #cbd5e1;
 }
 
 html.dark .bg-white,
@@ -100,6 +184,10 @@ html.dark ::placeholder {
 html.beige {
   --background: #f6f1e7;
   --foreground: #4b3b2f;
+  --ui-btn-bg: #f7efe4;
+  --ui-btn-bg-hover: #ebdece;
+  --ui-btn-border: #d4c2ae;
+  --ui-btn-text: #5a4738;
 }
 
 html.beige .bg-white,
@@ -172,6 +260,10 @@ html.beige .tone-primary-btn:hover {
 html.dark.beige {
   --background: #18130f;
   --foreground: #e8dccf;
+  --ui-btn-bg: #2a211a;
+  --ui-btn-bg-hover: #3b2f25;
+  --ui-btn-border: #5a4a3b;
+  --ui-btn-text: #d8c4ad;
 }
 
 html.dark.beige .bg-white,
