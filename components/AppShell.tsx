@@ -488,7 +488,9 @@ export default function AppShell({
   const isSettingsPage = pathname === '/settings'
   const topNavSubtitle = undefined
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
-  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(() => {
+    try { return localStorage.getItem('sidebar-open') !== 'false' } catch { return true }
+  })
   const [channelOrder, setChannelOrder] = useState<string[]>([])
   const [groupingEnabled, setGroupingEnabled] = useState(false)
   const [mode, setMode] = useState<'light' | 'dark'>('light')
@@ -548,6 +550,7 @@ export default function AppShell({
 
   const updateDesktopSidebarOpen = (open: boolean) => {
     setDesktopSidebarOpen(open)
+    try { localStorage.setItem('sidebar-open', String(open)) } catch {}
   }
 
   const toggleMode = () =>
