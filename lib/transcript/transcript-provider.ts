@@ -22,6 +22,7 @@ export interface TranscriptProvider {
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+const SUPADATA_API_KEY = process.env.SUPADATA_API_KEY?.trim() || '';
 const USE_BROWSER_COOKIES = (process.env.YT_DLP_USE_BROWSER_COOKIES || '').toLowerCase() === 'true';
 const COOKIES_BROWSER = process.env.YT_DLP_COOKIES_BROWSER || 'edge';
 const IMPERSONATE_TARGET = process.env.YT_DLP_IMPERSONATE || 'edge';
@@ -270,6 +271,44 @@ export class YtDlpStandaloneProvider implements TranscriptProvider {
   }
 }
 
+export class SupadataTranscriptProvider implements TranscriptProvider {
+  async fetchTranscript(videoId: string): Promise<TranscriptResult> {
+    const tryLang = async (lang: string): Promise<string | null> => {
+      const url = `https://api.supadata.ai/v1/youtube/transcript?videoId=${videoId}&lang=${lang}&text=true`;
+      const res = await fetch(url, {
+        headers: { 'x-api-key': SUPADATA_API_KEY },
+        signal: AbortSignal.timeout(30000),
+      });
+      if (!res.ok) return null;
+      const data = await res.json().catch(() => null);
+      if (!data) return null;
+      // Response: { content: string } or { segments: [{text, offset, duration}] }
+      if (typeof data.content === 'string' && data.content.trim().length >= 50) return data.content.trim();
+      if (Array.isArray(data.segments) && data.segments.length > 0) {
+        const text = data.segments.map((s: { text: string }) => s.text).join(' ').trim();
+        if (text.length >= 50) return text;
+      }
+      return null;
+    };
+
+    try {
+      const text = (await tryLang('ko')) ?? (await tryLang('en'));
+      if (!text) return { status: 'NOT_AVAILABLE' };
+      return { status: 'READY', text: text.slice(0, 50000), source: 'azure-service' };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return { status: 'FAILED', error: `supadata: ${message}` };
+    }
+  }
+
+  isAvailable(): boolean {
+    if (typeof window !== 'undefined') return false;
+    return Boolean(SUPADATA_API_KEY);
+  }
+
+  getName() { return 'supadata-transcript-api'; }
+}
+
 export class AzureTranscriptServiceProvider implements TranscriptProvider {
   private withTimeout(ms: number) {
     const controller = new AbortController();
@@ -453,6 +492,7 @@ class CompositeTranscriptProvider implements TranscriptProvider {
 
 export function getTranscriptProvider(): TranscriptProvider {
   const providers: TranscriptProvider[] = [
+    new SupadataTranscriptProvider(),
     new AzureTranscriptServiceProvider(),
     new YtDlpStandaloneProvider(),
   ];

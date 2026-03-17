@@ -208,7 +208,8 @@ export async function refreshVideoSummaryAction(
       videoId,
       title,
       description,
-      useTranscriptPipeline
+      useTranscriptPipeline,
+      true
     )
 
     const updatedVideo = await videoRepository.getByYouTubeId(videoId)

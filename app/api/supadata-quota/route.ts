@@ -1,0 +1,32 @@
+import { NextResponse } from 'next/server'
+
+export async function GET() {
+  const apiKey = process.env.SUPADATA_API_KEY
+  if (!apiKey) {
+    return NextResponse.json({ error: 'SUPADATA_API_KEY not configured' }, { status: 503 })
+  }
+
+  const res = await fetch('https://api.supadata.ai/v1/me', {
+    headers: { 'x-api-key': apiKey },
+    next: { revalidate: 300 }, // cache 5 minutes
+  })
+
+  if (!res.ok) {
+    return NextResponse.json({ error: 'Failed to fetch quota' }, { status: 502 })
+  }
+
+  const data = await res.json() as { plan: string; maxCredits: number; usedCredits: number }
+
+  const now = new Date()
+  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+  const msUntilReset = nextMonth.getTime() - now.getTime()
+  const hoursUntilReset = Math.ceil(msUntilReset / (1000 * 60 * 60))
+
+  return NextResponse.json({
+    plan: data.plan,
+    total: data.maxCredits,
+    used: data.usedCredits,
+    remaining: data.maxCredits - data.usedCredits,
+    hoursUntilReset,
+  })
+}

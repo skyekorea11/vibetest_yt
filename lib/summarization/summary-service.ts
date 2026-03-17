@@ -241,13 +241,13 @@ export const summaryService = {
       : ''
 
     const lines = [
-      `${cleanTitle || '이 영상'}를 중심으로 핵심 질문과 판단 포인트를 정리합니다.`,
+      `${cleanTitle || '이 영상'}의 핵심 주제를 먼저 짚어봅니다.`,
       descriptionSnippet
-        ? `영상 설명에서는 ${descriptionSnippet.replace(/[.!?]$/, '')}를 다룹니다.`
-        : '영상 설명 정보가 제한적이어서 제목에 드러난 주제를 중심으로 내용을 재구성했습니다.',
-      '핵심 내용은 단일 결론을 제시하기보다 조건별로 쟁점을 나누어 이해하도록 돕는 데 있습니다.',
-      '시청자는 자신의 상황에 맞춰 확인해야 할 기준과 우선순위를 점검할 수 있습니다.',
-      '결론적으로 단기적인 단편 정보보다 맥락과 리스크를 함께 보라는 실용적인 메시지를 전달합니다.',
+        ? `${descriptionSnippet.replace(/[.!?]$/, '')}.`
+        : '설명문 정보가 제한적이라 제목에 드러난 주제와 표현을 중심으로 맥락을 재구성했습니다.',
+      '핵심은 제시된 사례가 어떤 전제에서 성립하는지 확인하는 데 있습니다.',
+      '단편 주장보다 배경, 조건, 파급효과를 함께 보도록 구성된 내용입니다.',
+      '정리하면 시청자가 스스로 판단 기준을 세우는 데 초점을 둔 영상입니다.',
     ]
 
     return this.clampSummaryLines(formatSummaryText(lines.join(' '), 5), 5, 180, 500)
@@ -523,7 +523,7 @@ export const summaryService = {
       }
 
       // 캐시 없음 또는 forceRefresh → 전체 파이프라인 실행
-      return await this.generateNewSummary(videoId, title, description, useTranscriptPipeline)
+      return await this.generateNewSummary(videoId, title, description, useTranscriptPipeline, forceRefresh)
     } catch (error) {
       console.error('Error getting summary:', error)
       return null
@@ -537,7 +537,8 @@ export const summaryService = {
     videoId: string,
     title: string,
     description: string,
-    useTranscriptPipeline = true
+    useTranscriptPipeline = true,
+    forceTranscriptRefetch = false
   ): Promise<{ text: string; sourceType: 'transcript' | 'description' | 'external' } | null> {
     try {
       const preferExternal = this.isExternalSummaryPreferred()
@@ -557,10 +558,10 @@ export const summaryService = {
       const transcriptProvider = getTranscriptProvider()
       const existing = await videoRepository.getByYouTubeId(videoId)
 
-      let transcript: string | null = existing?.transcript_text || null
+      let transcript: string | null = forceTranscriptRefetch ? null : (existing?.transcript_text || null)
 
       // transcript가 아직 없으면 추출 시도
-      if (!transcript && useTranscriptPipeline) {
+      if ((!transcript || forceTranscriptRefetch) && useTranscriptPipeline) {
         if (transcriptProvider.isAvailable()) {
           console.log(`[summary] extracting transcript for ${videoId} via ${transcriptProvider.getName()}`)
           await videoRepository.updateTranscript(videoId, '', 'pending')
