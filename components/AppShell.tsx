@@ -64,6 +64,7 @@ interface AppShellProps {
   onChannelRemoved?: (channelId: string) => void
   onChannelSelected?: (channelId: string) => void
   onChannelGroupChanged?: (channelId: string, group: SidebarChannelGroup) => void | Promise<void>
+  onChannelOrderChanged?: (orderedChannelIds: string[]) => void | Promise<void>
   onChannelClearFilter?: () => void
   selectedChannelIds?: string[]
   newVideoCount?: number
@@ -477,6 +478,7 @@ export default function AppShell({
   onChannelRemoved,
   onChannelSelected,
   onChannelGroupChanged,
+  onChannelOrderChanged,
   onChannelClearFilter,
   selectedChannelIds = [],
   newVideoCount = 0,
@@ -488,7 +490,7 @@ export default function AppShell({
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
   const [channelOrder, setChannelOrder] = useState<string[]>([])
-  const [groupingEnabled, setGroupingEnabled] = useState(true)
+  const [groupingEnabled, setGroupingEnabled] = useState(false)
   const [mode, setMode] = useState<'light' | 'dark'>('light')
   const [tone, setTone] = useState<'cool' | 'beige'>('cool')
 
@@ -534,15 +536,14 @@ export default function AppShell({
   })()
 
   const handleChannelReorder = (sourceId: string, targetId: string) => {
-    setChannelOrder((prev) => {
-      const current = prev.length > 0 ? [...prev] : channels.map((c) => c.youtube_channel_id)
-      const sourceIdx = current.indexOf(sourceId)
-      const targetIdx = current.indexOf(targetId)
-      if (sourceIdx === -1 || targetIdx === -1 || sourceIdx === targetIdx) return current
-      const [moved] = current.splice(sourceIdx, 1)
-      current.splice(targetIdx, 0, moved)
-      return current
-    })
+    const current = channelOrder.length > 0 ? [...channelOrder] : channels.map((c) => c.youtube_channel_id)
+    const sourceIdx = current.indexOf(sourceId)
+    const targetIdx = current.indexOf(targetId)
+    if (sourceIdx === -1 || targetIdx === -1 || sourceIdx === targetIdx) return
+    const [moved] = current.splice(sourceIdx, 1)
+    current.splice(targetIdx, 0, moved)
+    setChannelOrder(current)
+    void onChannelOrderChanged?.(current)
   }
 
   const updateDesktopSidebarOpen = (open: boolean) => {

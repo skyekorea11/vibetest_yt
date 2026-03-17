@@ -305,6 +305,29 @@ export default function SettingsPage() {
     }
   }
 
+  const handleChannelOrderChanged = async (orderedChannelIds: string[]) => {
+    const idxMap = new Map(orderedChannelIds.map((id, idx) => [id, idx] as const))
+    setChannels((prev) =>
+      [...prev].sort((a, b) => {
+        const aIdx = idxMap.get(a.youtube_channel_id)
+        const bIdx = idxMap.get(b.youtube_channel_id)
+        if (aIdx == null && bIdx == null) return 0
+        if (aIdx == null) return 1
+        if (bIdx == null) return -1
+        return aIdx - bIdx
+      })
+    )
+    const result = await channelRepository.updateSortOrders(orderedChannelIds)
+    if (!result.success) {
+      setChannelGroupMessage(
+        result.reason === 'missing_column'
+          ? 'DB에 sort_order 컬럼이 없어 순서를 저장할 수 없습니다. schema.sql 반영 후 다시 시도해주세요.'
+          : (result.message || '채널 순서 저장에 실패했습니다.')
+      )
+      await loadChannels()
+    }
+  }
+
   const channelsWithGroup = useMemo(() => {
     return channels.map((channel) => ({
       channel,
@@ -361,6 +384,7 @@ export default function SettingsPage() {
     <AppShell
       channels={channels}
       onChannelAdded={loadChannels}
+      onChannelOrderChanged={handleChannelOrderChanged}
       newVideoCount={refreshStatus.newVideoCount}
       onManualRefresh={handleManualRefresh}
     >

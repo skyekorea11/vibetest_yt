@@ -12,10 +12,28 @@ export const channelRepository = {
    */
   async getAll(): Promise<Channel[]> {
     try {
-      const { data, error } = await supabase
-        .from('channels')
-        .select('*')
-        .order('created_at', { ascending: false })
+      const runSortedQuery = () =>
+        supabase
+          .from('channels')
+          .select('*')
+          .order('sort_order', { ascending: true, nullsFirst: false })
+          .order('created_at', { ascending: false })
+
+      let { data, error } = await runSortedQuery()
+
+      // Backward compatibility: if DB has not migrated `sort_order`, fallback to created_at only.
+      if (error && typeof error === 'object') {
+        const e = error as { code?: string; message?: string; details?: string }
+        const lower = `${e.message || ''} ${e.details || ''}`.toLowerCase()
+        if (e.code === 'PGRST204' || lower.includes('sort_order') || lower.includes('column')) {
+          const fallback = await supabase
+            .from('channels')
+            .select('*')
+            .order('created_at', { ascending: false })
+          data = fallback.data
+          error = fallback.error
+        }
+      }
 
       if (error) {
         // log raw object first (may be non-enumerable)
@@ -42,6 +60,40 @@ export const channelRepository = {
         stack: error instanceof Error ? error.stack : undefined,
       })
       return []
+    }
+  },
+
+  async updateSortOrders(
+    orderedChannelIds: string[]
+  ): Promise<{ success: boolean; reason?: 'missing_column' | 'error'; message?: string }> {
+    try {
+      for (let idx = 0; idx < orderedChannelIds.length; idx += 1) {
+        const youtubeChannelId = orderedChannelIds[idx]
+        const { error } = await supabase
+          .from('channels')
+          .update({
+            sort_order: idx + 1,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('youtube_channel_id', youtubeChannelId)
+        if (error) throw error
+      }
+      return { success: true }
+    } catch (error) {
+      let message = '채널 순서 저장에 실패했습니다.'
+      let reason: 'missing_column' | 'error' = 'error'
+      if (error && typeof error === 'object') {
+        const e = error as { message?: string; details?: string; code?: string }
+        if (typeof e.message === 'string' && e.message.trim()) {
+          message = e.message
+        }
+        const lower = `${e.message || ''} ${e.details || ''}`.toLowerCase()
+        if (e.code === 'PGRST204' || lower.includes('sort_order') || lower.includes('column')) {
+          reason = 'missing_column'
+        }
+      }
+      console.error('Error updating channel sort order:', error)
+      return { success: false, reason, message }
     }
   },
 

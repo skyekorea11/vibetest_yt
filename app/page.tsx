@@ -537,6 +537,25 @@ export default function DashboardPage() {
     }
   }
 
+  const handleChannelOrderChanged = async (orderedChannelIds: string[]) => {
+    const idxMap = new Map(orderedChannelIds.map((id, idx) => [id, idx] as const))
+    setChannels((prev) =>
+      [...prev].sort((a, b) => {
+        const aIdx = idxMap.get(a.youtube_channel_id)
+        const bIdx = idxMap.get(b.youtube_channel_id)
+        if (aIdx == null && bIdx == null) return 0
+        if (aIdx == null) return 1
+        if (bIdx == null) return -1
+        return aIdx - bIdx
+      })
+    )
+    const result = await channelRepository.updateSortOrders(orderedChannelIds)
+    if (!result.success) {
+      console.error('채널 순서 저장 실패:', result.message || 'unknown_error')
+      await loadData()
+    }
+  }
+
   const shellProps = {
     channels,
     onChannelAdded:    loadData,
@@ -548,6 +567,7 @@ export default function DashboardPage() {
       prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
     ),
     onChannelGroupChanged: handleChannelGroupChanged,
+    onChannelOrderChanged: handleChannelOrderChanged,
     onChannelClearFilter: () => setSelectedChannelIds([]),
     selectedChannelIds,
     newVideoCount:     refreshStatus?.newVideoCount ?? 0,

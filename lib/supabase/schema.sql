@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS public.channels (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   youtube_channel_id TEXT NOT NULL UNIQUE,
   title TEXT NOT NULL,
+  sort_order INTEGER,
   stock_mode TEXT NOT NULL DEFAULT 'auto',
   news_mode TEXT NOT NULL DEFAULT 'auto',
   handle TEXT,
@@ -29,6 +30,9 @@ ALTER TABLE public.channels
 
 ALTER TABLE public.channels
   ADD COLUMN IF NOT EXISTS channel_group TEXT;
+
+ALTER TABLE public.channels
+  ADD COLUMN IF NOT EXISTS sort_order INTEGER;
 
 -- Create videos table
 CREATE TABLE IF NOT EXISTS public.videos (
@@ -116,6 +120,7 @@ ALTER TABLE public.videos
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS idx_videos_channel_id ON public.videos(youtube_channel_id);
 CREATE INDEX IF NOT EXISTS idx_videos_published_at ON public.videos(published_at DESC);
+CREATE INDEX IF NOT EXISTS idx_channels_sort_order ON public.channels(sort_order ASC);
 CREATE INDEX IF NOT EXISTS idx_video_notes_video_id ON public.video_notes(youtube_video_id);
 CREATE INDEX IF NOT EXISTS idx_video_favorites_video_id ON public.video_favorites(youtube_video_id);
 CREATE INDEX IF NOT EXISTS idx_video_favorites_is_favorite ON public.video_favorites(is_favorite);
