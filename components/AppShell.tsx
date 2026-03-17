@@ -487,24 +487,27 @@ export default function AppShell({
   const isSettingsPage = pathname === '/settings'
   const topNavSubtitle = undefined
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
-  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(() => {
-    try { return localStorage.getItem('sidebar-open') !== 'false' } catch { return true }
-  })
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
   const [channelOrder, setChannelOrder] = useState<string[]>([])
   const [groupingEnabled, setGroupingEnabled] = useState(false)
-  const [mode, setMode] = useState<'light' | 'dark'>(() => {
+  const [mode, setMode] = useState<'light' | 'dark'>('light')
+  const [tone, setTone] = useState<'cool' | 'beige'>('cool')
+
+  // Read localStorage after hydration to avoid SSR mismatch
+  useEffect(() => {
     try {
-      const saved = localStorage.getItem('theme-mode')
-      if (saved === 'dark' || saved === 'light') return saved
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-    } catch { return 'light' }
-  })
-  const [tone, setTone] = useState<'cool' | 'beige'>(() => {
-    try {
-      const saved = localStorage.getItem('theme-tone')
-      return saved === 'beige' ? 'beige' : 'cool'
-    } catch { return 'cool' }
-  })
+      const savedMode = localStorage.getItem('theme-mode')
+      if (savedMode === 'dark' || savedMode === 'light') {
+        setMode(savedMode)
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setMode('dark')
+      }
+      const savedTone = localStorage.getItem('theme-tone')
+      if (savedTone === 'beige') setTone('beige')
+      const savedSidebar = localStorage.getItem('sidebar-open')
+      if (savedSidebar === 'false') setDesktopSidebarOpen(false)
+    } catch {}
+  }, [])
 
   useEffect(() => {
     const root = document.documentElement
