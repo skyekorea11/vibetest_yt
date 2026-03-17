@@ -205,9 +205,8 @@ function SidebarContent({
 
   return (
     <>
-      <div className="h-14 flex items-center justify-between px-5 font-semibold text-lg text-slate-800">
-        <span>{isSettingsPage ? 'Settings' : 'Channels'}</span>
-        {onClose ? (
+      {onClose ? (
+        <div className="flex justify-end px-3 pt-2">
           <button
             type="button"
             onClick={onClose}
@@ -216,8 +215,8 @@ function SidebarContent({
           >
             ✕
           </button>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
 
       <div className="px-3 py-2 flex gap-1 sidebar-nav-divider">
         {NAV_ITEMS.map(({ label, href }) => {
@@ -563,33 +562,45 @@ export default function AppShell({
     setGroupingEnabled((prev) => !prev)
 
   return (
-    <div className="flex h-screen overflow-hidden app-shell-bg">
-      <aside
-        className={`hidden w-72 shrink-0 bg-white border-r border-slate-100 flex-col overflow-hidden ${
-          desktopSidebarOpen ? 'lg:flex' : 'lg:hidden'
-        }`}
-      >
-        <SidebarContent
-          isSettingsPage={isSettingsPage}
-          pathname={pathname}
-          channels={orderedChannels}
-          newVideoCount={newVideoCount}
-          selectedChannelIds={selectedChannelIds}
-          onChannelAdded={onChannelAdded}
-          onChannelRemoved={onChannelRemoved}
-          onChannelSelected={onChannelSelected}
-          onChannelGroupChanged={onChannelGroupChanged}
-          onChannelClearFilter={onChannelClearFilter}
-          onChannelReorder={handleChannelReorder}
-          groupingEnabled={groupingEnabled}
-          onGroupingToggle={toggleGrouping}
-          onClose={() => updateDesktopSidebarOpen(false)}
-        />
-      </aside>
-      {!desktopSidebarOpen && (
-        <CollapsedSidebarRail pathname={pathname} onOpen={() => updateDesktopSidebarOpen(true)} />
-      )}
+    <div className="flex flex-col h-screen overflow-hidden app-shell-bg">
+      <TopNav
+        onManualRefresh={onManualRefresh}
+        mode={mode}
+        onModeToggle={toggleMode}
+        tone={tone}
+        onToneToggle={toggleTone}
+        subtitle={topNavSubtitle}
+      />
 
+      <div className="flex flex-1 overflow-hidden min-w-0">
+        <aside
+          className={`hidden w-72 shrink-0 bg-white border-r border-slate-100 flex-col overflow-hidden ${
+            desktopSidebarOpen ? 'lg:flex' : 'lg:hidden'
+          }`}
+        >
+          <SidebarContent
+            isSettingsPage={isSettingsPage}
+            pathname={pathname}
+            channels={orderedChannels}
+            newVideoCount={newVideoCount}
+            selectedChannelIds={selectedChannelIds}
+            onChannelAdded={onChannelAdded}
+            onChannelRemoved={onChannelRemoved}
+            onChannelSelected={onChannelSelected}
+            onChannelGroupChanged={onChannelGroupChanged}
+            onChannelClearFilter={onChannelClearFilter}
+            onChannelReorder={handleChannelReorder}
+            groupingEnabled={groupingEnabled}
+            onGroupingToggle={toggleGrouping}
+            onClose={() => updateDesktopSidebarOpen(false)}
+          />
+        </aside>
+        {!desktopSidebarOpen && (
+          <CollapsedSidebarRail pathname={pathname} onOpen={() => updateDesktopSidebarOpen(true)} />
+        )}
+
+        <main className="flex-1 overflow-y-auto p-5 pb-20 lg:pb-5">{children}</main>
+      </div>
 
       {mobileSidebarOpen && (
         <div
@@ -621,18 +632,6 @@ export default function AppShell({
           onClose={() => setMobileSidebarOpen(false)}
         />
       </aside>
-
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <TopNav
-          onManualRefresh={onManualRefresh}
-          mode={mode}
-          onModeToggle={toggleMode}
-          tone={tone}
-          onToneToggle={toggleTone}
-          subtitle={topNavSubtitle}
-        />
-        <main className="flex-1 overflow-y-auto p-5 pb-20 lg:pb-5">{children}</main>
-      </div>
 
       {!mobileSidebarOpen && (
         <CollapsedSidebarRail
