@@ -585,9 +585,9 @@ export const summaryService = {
         }
       }
 
-      // transcript 없으면 실패 처리
+      // transcript 없으면 실패 처리 (description 폴백 제거 - 품질 낮은 요약 방지)
       if (!transcript) {
-        return await fallbackToDescription()
+        return null
       }
 
       // transcript 있으면 요약 생성
