@@ -204,6 +204,15 @@ export async function refreshVideoSummaryAction(
   error?: string
 }> {
   try {
+    // If transcript already exists in DB, just regenerate summary without re-fetching transcript
+    const existingVideo = await videoRepository.getByYouTubeId(videoId)
+    if (existingVideo?.transcript_text) {
+      const result = await summaryService.generateTranscriptSummary(videoId, existingVideo.transcript_text)
+      const updatedVideo = await videoRepository.getByYouTubeId(videoId)
+      if (!result) return { success: false, video: updatedVideo, error: 'Failed to generate summary.' }
+      return { success: true, summary: result, video: updatedVideo }
+    }
+
     const summary = await summaryService.generateNewSummary(
       videoId,
       title,
