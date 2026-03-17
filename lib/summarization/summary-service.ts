@@ -702,6 +702,19 @@ export const summaryService = {
         summary = await new HeuristicTranscriptSummarizer().summarize(transcriptForSummary, 200)
       }
 
+      // Bullet format detection: if Gemini returned bullet-formatted output, bypass post-processing pipeline
+      const isBulletFormat = (text: string | null): text is string => {
+        if (!text) return false
+        const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
+        return lines.filter(l => /^[•\-*]/.test(l)).length >= 2
+      }
+
+      if (isBulletFormat(summary)) {
+        await videoRepository.updateTranscript(videoId, transcriptForSummary, 'extracted')
+        await videoRepository.updateSummary(videoId, summary, 'transcript', 'complete')
+        return { text: summary, sourceType: 'transcript' }
+      }
+
       const heuristicSummary = formatSummaryText(buildHeuristicSummary(transcriptForSummary, 5), 5)
       const formattedSummaryRaw = summary
         ? formatSummaryText(summary, 5)
