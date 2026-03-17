@@ -17,16 +17,11 @@ export async function GET() {
 
   const data = await res.json() as { plan: string; maxCredits: number; usedCredits: number }
 
-  const now = new Date()
-  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
-  const msUntilReset = nextMonth.getTime() - now.getTime()
-  const hoursUntilReset = Math.ceil(msUntilReset / (1000 * 60 * 60))
-
   return NextResponse.json({
     plan: data.plan,
     total: data.maxCredits,
     used: data.usedCredits,
     remaining: data.maxCredits - data.usedCredits,
-    hoursUntilReset,
+    resetCycleDays: 14,
   })
 }

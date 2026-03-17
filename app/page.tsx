@@ -84,7 +84,7 @@ export default function DashboardPage() {
   const [newsPanelLoading, setNewsPanelLoading] = useState(false)
   const [newsPanelError, setNewsPanelError] = useState('')
   const [newsPanelCollapsed, setNewsPanelCollapsed] = useState(false)
-  const [supadataQuota, setSupadataQuota] = useState<{ remaining: number; total: number; hoursUntilReset: number } | null>(null)
+  const [supadataQuota, setSupadataQuota] = useState<{ remaining: number; total: number; resetCycleDays: number } | null>(null)
   const [relatedVideoRefreshTokenById, setRelatedVideoRefreshTokenById] = useState<Record<string, number>>({})
   const [externalChannelVideosById, setExternalChannelVideosById] = useState<Record<string, ChannelVideoItem[]>>({})
   const [externalChannelVideoLoadingById, setExternalChannelVideoLoadingById] = useState<Record<string, boolean>>({})
@@ -951,12 +951,7 @@ export default function DashboardPage() {
                 <p className="text-sm font-semibold text-gray-800">{supadataQuota.remaining} <span className="font-normal text-gray-400">/ {supadataQuota.total}</span></p>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-xs text-gray-400">충전까지</p>
-                <p className="text-xs font-medium text-indigo-500">
-                  {supadataQuota.hoursUntilReset >= 24
-                    ? `${Math.floor(supadataQuota.hoursUntilReset / 24)}일 ${supadataQuota.hoursUntilReset % 24}시간`
-                    : `${supadataQuota.hoursUntilReset}시간`}
-                </p>
+                <p className="text-xs text-indigo-400">{supadataQuota.resetCycleDays}일 주기 충전</p>
               </div>
             </div>
           )}
