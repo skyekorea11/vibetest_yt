@@ -1680,15 +1680,27 @@ export async function GET(
         const summaryBasisScore = summaryBasisTerms.filter((term) =>
           normalizedTitle.includes(normalizeTerm(term))
         ).length
-        return { ...a, _score: score, _anchorScore: anchorScore, _titleBasisScore: titleBasisScore, _summaryBasisScore: summaryBasisScore }
+        const weightedBasisScore = (titleBasisScore * 0.3) + (summaryBasisScore * 0.7)
+        return {
+          ...a,
+          _score: score,
+          _anchorScore: anchorScore,
+          _titleBasisScore: titleBasisScore,
+          _summaryBasisScore: summaryBasisScore,
+          _weightedBasisScore: weightedBasisScore,
+        }
       })
-      .sort((a, b) => b._score - a._score)
+      .sort((a, b) => {
+        if (b._weightedBasisScore !== a._weightedBasisScore) return b._weightedBasisScore - a._weightedBasisScore
+        if (b._score !== a._score) return b._score - a._score
+        return b._anchorScore - a._anchorScore
+      })
 
     const minAnchorScore = isHousingMigrationTopic ? 0 : (channelNewsMode === 'strict' ? 2 : 1)
     let relevant = scored.filter((a) => {
       if (a._score < minScore) return false
       if (titleBasisTerms.length > 0 && summaryBasisTerms.length > 0) {
-        if (a._titleBasisScore < 1 && a._summaryBasisScore < 1) return false
+        if (a._weightedBasisScore < 0.7 && a._titleBasisScore < 1 && a._summaryBasisScore < 1) return false
       } else if (titleBasisTerms.length > 0 && a._titleBasisScore < 1) {
         return false
       } else if (summaryBasisTerms.length > 0 && a._summaryBasisScore < 1) {
@@ -1729,7 +1741,7 @@ export async function GET(
     if (!isCartelTopic && !isHousingMigrationTopic && !isCyberSecurityTopic && relevant.length === 0 && scored.length > 0) {
       // 일반 토픽에서 과도한 필터로 0건이 되는 경우, 제목/요약 기반 최소 매칭 기사 일부 허용
       relevant = scored
-        .filter((a) => a._score >= 1 && (a._titleBasisScore >= 1 || a._summaryBasisScore >= 1))
+        .filter((a) => a._score >= 1 && (a._weightedBasisScore >= 0.7 || a._titleBasisScore >= 1 || a._summaryBasisScore >= 1))
         .slice(0, 6)
     }
     if (!isCartelTopic && !isHousingMigrationTopic && !isCyberSecurityTopic && relevant.length > 0 && relevant.length < 4) {
@@ -1737,7 +1749,7 @@ export async function GET(
       const existingLinks = new Set(relevant.map((a) => a.link))
       const supplement = scored
         .filter((a) => !existingLinks.has(a.link))
-        .filter((a) => a._score >= 1 && (a._titleBasisScore >= 1 || a._summaryBasisScore >= 1))
+        .filter((a) => a._score >= 1 && (a._weightedBasisScore >= 0.7 || a._titleBasisScore >= 1 || a._summaryBasisScore >= 1))
         .filter((a) => {
           if (entityAnchorTerms.length === 0) return true
           const t = a.title.toLowerCase().replace(/\s+/g, '')
@@ -1751,11 +1763,12 @@ export async function GET(
       ? []
       : relevant
       .slice(0, 8)
-      .map(({ _score, _anchorScore, _titleBasisScore, _summaryBasisScore, ...a }) => {
+      .map(({ _score, _anchorScore, _titleBasisScore, _summaryBasisScore, _weightedBasisScore, ...a }) => {
         void _score
         void _anchorScore
         void _titleBasisScore
         void _summaryBasisScore
+        void _weightedBasisScore
         return a
       })
 

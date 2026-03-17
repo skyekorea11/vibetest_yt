@@ -11,7 +11,7 @@ import { refreshAllChannelsAction } from '@/actions/channel-actions'
 import AppShell from '@/components/AppShell'
 import EmptyState from '@/components/EmptyState'
 import { LoadingGridSkeleton } from '@/components/LoadingSkeleton'
-import { Heart, ExternalLink, RefreshCw, Newspaper } from 'lucide-react'
+import { Heart, ExternalLink, RefreshCw, Newspaper, ChevronDown } from 'lucide-react'
 import { isValidStoredVideo } from '@/lib/utils/video-validity'
 
 interface RelatedNewsItem {
@@ -38,6 +38,7 @@ export default function FavoritesPage() {
   const [togglingIds, setTogglingIds] = useState<Set<string>>(new Set())
 
   const [selectedChannelTab, setSelectedChannelTab] = useState<TabKey>('all')
+  const [collapsedChannelIds, setCollapsedChannelIds] = useState<Set<string>>(new Set())
   const [showAllChannelTabs, setShowAllChannelTabs] = useState(false)
   const [channelSearchInput, setChannelSearchInput] = useState('')
   const [isChannelTabOverflow, setIsChannelTabOverflow] = useState(false)
@@ -550,17 +551,38 @@ export default function FavoritesPage() {
     )
   }
 
-  const renderChannelGroup = (channelId: string, channelTitle: string, videos: Video[]) => (
-    <div key={channelId} className="space-y-3">
-      <div className="flex items-center gap-2">
-        <span className="font-bold text-gray-900">{channelTitle}</span>
-        <span className="text-xs text-gray-400 ml-auto">· {videos.length}개 영상</span>
+  const renderChannelGroup = (channelId: string, channelTitle: string, videos: Video[]) => {
+    const isCollapsed = collapsedChannelIds.has(channelId)
+    return (
+      <div key={channelId} className="space-y-3">
+        <button
+          type="button"
+          onClick={() =>
+            setCollapsedChannelIds((prev) => {
+              const next = new Set(prev)
+              if (next.has(channelId)) next.delete(channelId)
+              else next.add(channelId)
+              return next
+            })
+          }
+          className="w-full flex items-center gap-2 rounded-lg px-1 py-1 text-left hover:bg-slate-50 transition-colors"
+        >
+          <ChevronDown
+            size={15}
+            className={`text-slate-400 transition-transform ${isCollapsed ? '-rotate-90' : ''}`}
+          />
+          <span className="font-bold text-gray-900">{channelTitle}</span>
+          <span className="text-xs text-gray-400 ml-auto">· {videos.length}개 영상</span>
+          <span className="text-xs text-slate-500">{isCollapsed ? '펼치기' : '접기'}</span>
+        </button>
+        {!isCollapsed ? (
+          <div className="space-y-3">
+            {videos.map(v => renderVideoCard(v))}
+          </div>
+        ) : null}
       </div>
-      <div className="space-y-3">
-        {videos.map(v => renderVideoCard(v))}
-      </div>
-    </div>
-  )
+    )
+  }
 
   // Determine what to show based on selected tab
   const groupsToShow = selectedChannelTab === 'all'
@@ -586,7 +608,7 @@ export default function FavoritesPage() {
         <div className="space-y-6">
 
           {/* Compact tab bar */}
-          <div className="space-y-2">
+          <div className="sticky top-0 z-20 space-y-2 bg-white py-2 border-b border-slate-200">
             <div className="flex items-center gap-2">
               <div
                 ref={channelTabWrapRef}
