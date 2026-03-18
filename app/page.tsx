@@ -703,8 +703,8 @@ export default function DashboardPage() {
           >
             {isSummaryLoading
               ? video.transcript_status === 'pending'
-                ? `자막 추출 중... ${summaryElapsedSeconds}초`
-                : `요약 생성 중... ${summaryElapsedSeconds}초`
+                ? '자막 추출 중...'
+                : '요약 생성 중...'
               : video.summary_status === 'complete' && !!video.summary_text
               ? '요약 다시 생성'
               : video.summary_status === 'failed' || video.transcript_status === 'not_available' || video.transcript_status === 'failed'
