@@ -706,7 +706,7 @@ export default function DashboardPage() {
                   {lines.map((l, i) => (
                     <li key={i} className="flex gap-2 ui-text-body text-gray-700 leading-snug">
                       <span className="shrink-0 mt-0.5 text-gray-400">✦</span>
-                      <span>{l.replace(/^[✦•\-*]\s*/, '')}</span>
+                      <span className="break-keep">{l.replace(/^[✦•\-*]\s*/, '')}</span>
                     </li>
                   ))}
                 </ul>
