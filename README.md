@@ -1,4 +1,4 @@
-# YT Digest
+# My Youtube Signal
 
 **라이브 데모: https://vibetest-yt-drcq.vercel.app/**
 

@@ -55,7 +55,7 @@ export default function TopNav({
                 <Play size={14} className="text-white fill-white ml-0.5" />
               </div>
               <span className="min-w-0 flex flex-col leading-tight">
-                <span className="truncate">My Youtube Signal, YouTube Radar</span>
+                <span className="truncate">My Youtube Signal</span>
                 {subtitle ? (
                   <span className="text-[11px] font-medium text-slate-500 truncate mt-0.5">{subtitle}</span>
                 ) : null}

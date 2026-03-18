@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "YouTube Radar",
+  title: "My Youtube Signal",
   description: "Discover, summarize, and organize YouTube videos from your favorite channels",
   icons: {
     icon: '/favicon.ico',
