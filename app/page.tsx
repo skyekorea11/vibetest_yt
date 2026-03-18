@@ -306,7 +306,15 @@ export default function DashboardPage() {
       const validVideosData = videosData.filter(isValidStoredVideo)
       setChannels(channelsData)
       setVideos(validVideosData)
-      setSelectedVideoId(validVideosData[0]?.youtube_video_id ?? null)
+      const savedId = sessionStorage.getItem('selectedVideoId')
+      const savedIdx = savedId ? validVideosData.findIndex(v => v.youtube_video_id === savedId) : -1
+      const hasRestored = savedIdx >= 0
+      const initialId = hasRestored ? savedId! : validVideosData[0]?.youtube_video_id ?? null
+      if (hasRestored) {
+        pendingScrollToSelected.current = true
+        if (savedIdx >= 20) setVisibleCount(savedIdx + 10)
+      }
+      setSelectedVideoId(initialId)
       setFavoriteIds(new Set(favoritesData.map(f => f.youtube_video_id)))
       const notesMap: Record<string, string> = {}
       for (const note of notesData) {
@@ -530,6 +538,30 @@ export default function DashboardPage() {
     }
   }, [sortedVideos, selectedVideoId])
 
+  const videoListRef = useRef<HTMLDivElement>(null)
+  const pendingScrollToSelected = useRef(false)
+  useEffect(() => {
+    if (!pendingScrollToSelected.current || !selectedVideoId || !videoListRef.current) return
+    const item = videoListRef.current.querySelector(`[data-video-id="${selectedVideoId}"]`)
+    if (item) {
+      item.scrollIntoView({ block: 'center' })
+      pendingScrollToSelected.current = false
+    }
+  }, [videos, selectedVideoId])
+
+  const isFirstSelectedRender = useRef(true)
+  useEffect(() => {
+    if (isFirstSelectedRender.current) {
+      isFirstSelectedRender.current = false
+      return
+    }
+    if (selectedVideoId) {
+      sessionStorage.setItem('selectedVideoId', selectedVideoId)
+    } else {
+      sessionStorage.removeItem('selectedVideoId')
+    }
+  }, [selectedVideoId])
+
   useEffect(() => {
     if (!selectedVideo) return
     if (getChannelModes(selectedVideo).news === 'off') {
@@ -716,7 +748,7 @@ export default function DashboardPage() {
           ) : video.summary_status === 'complete' && video.summary_text ? (
             (() => {
               const lines = video.summary_text.split('\n').map(l => l.trim()).filter(Boolean)
-              const isBullet = lines.length >= 2 && lines.every(l => /^[✦•\-*]/.test(l))
+              const isBullet = lines.length >= 2
               return isBullet ? (
                 <ul className="space-y-2">
                   {lines.map((l, i) => (
@@ -862,6 +894,7 @@ export default function DashboardPage() {
 
         {/* ── 좌측: 영상 목록 ──────────────────────────────────────────── */}
         <div
+          ref={videoListRef}
           className="border border-slate-100 rounded-2xl bg-white shadow-[0_1px_4px_rgba(16,24,40,0.06)] overflow-y-auto"
           style={{ maxHeight: panelMaxHeight }}
           onScroll={(e) => {
@@ -914,6 +947,7 @@ export default function DashboardPage() {
               return (
                 <div
                   key={video.youtube_video_id}
+                  data-video-id={video.youtube_video_id}
                   role="button"
                   tabIndex={0}
                   onClick={() =>
