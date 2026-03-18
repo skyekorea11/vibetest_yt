@@ -174,7 +174,7 @@ export default function VideoCard({
           </div>
 
           {/* Title */}
-          <h3 className="text-base font-semibold text-gray-900 mb-3 line-clamp-2 leading-snug">
+          <h3 className="text-base font-semibold text-gray-900 mb-3 line-clamp-1 leading-snug">
             {video.title}
           </h3>
 

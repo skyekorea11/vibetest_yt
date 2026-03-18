@@ -935,7 +935,7 @@ export default function DashboardPage() {
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start gap-2">
-                      <h3 className="flex-1 flex items-start gap-1.5 text-[13px] font-semibold text-gray-900 leading-snug min-h-[2.4rem]">
+                      <h3 className="flex-1 flex items-start gap-1.5 text-[13px] font-semibold text-gray-900 leading-snug">
                         {channelThumbById.get(video.youtube_channel_id) ? (
                           <img
                             src={channelThumbById.get(video.youtube_channel_id)}
@@ -945,7 +945,7 @@ export default function DashboardPage() {
                         ) : (
                           <span className="w-4 h-4 rounded bg-slate-200 border border-slate-200 shrink-0 mt-0.5" />
                         )}
-                        <span className="line-clamp-2">{video.title}</span>
+                        <span className="line-clamp-1">{video.title}</span>
                       </h3>
                       <button
                         onClick={(e) => { e.stopPropagation(); toggleFavorite(video.youtube_video_id) }}
