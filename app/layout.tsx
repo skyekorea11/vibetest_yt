@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+export const maxDuration = 60
+
 export const metadata: Metadata = {
   title: "My Youtube Signal",
   description: "Discover, summarize, and organize YouTube videos from your favorite channels",
