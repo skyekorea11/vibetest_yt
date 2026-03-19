@@ -730,7 +730,9 @@ export default function DashboardPage() {
                 <span className="font-medium text-gray-600">{Math.max(0, 60 - summaryElapsedSeconds)}초 남았습니다</span>
               </p>
               <p className="text-xs text-gray-400">
-                {summaryElapsedSeconds < 8
+                {summaryElapsedSeconds < 1
+                  ? ''
+                  : summaryElapsedSeconds < 8
                   ? '🤔 흠...누군가 일을 제대로 하지 않네요. 다시 채찍질 해보겠습니다.'
                   : summaryElapsedSeconds < 25
                   ? '🧘 기다리는 동안 기지개를 펴 보아요!'
