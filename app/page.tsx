@@ -107,14 +107,6 @@ export default function DashboardPage() {
   useEffect(() => { loadData() }, [])
   useEffect(() => { void loadSupadataQuota() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const selectVideo = params.get('selectVideo')
-    if (selectVideo) {
-      setSelectedVideoId(selectVideo)
-      window.history.replaceState(null, '', '/')
-    }
-  }, [])
 
   useEffect(() => {
     if (!summaryLoadingVideoId) {
@@ -317,15 +309,26 @@ export default function DashboardPage() {
       const validVideosData = videosData.filter(isValidStoredVideo)
       setChannels(channelsData)
       setVideos(validVideosData)
-      const savedId = sessionStorage.getItem('selectedVideoId')
-      const savedIdx = savedId ? validVideosData.findIndex(v => v.youtube_video_id === savedId) : -1
-      const hasRestored = savedIdx >= 0
-      const initialId = hasRestored ? savedId! : validVideosData[0]?.youtube_video_id ?? null
-      if (hasRestored) {
+      // URL param(바로가기)이 있으면 최우선
+      const urlParams = new URLSearchParams(window.location.search)
+      const urlSelectVideo = urlParams.get('selectVideo')
+      if (urlSelectVideo) {
+        window.history.replaceState(null, '', '/')
+        const urlIdx = validVideosData.findIndex(v => v.youtube_video_id === urlSelectVideo)
+        if (urlIdx >= 20) setVisibleCount(urlIdx + 10)
         pendingScrollToSelected.current = true
-        if (savedIdx >= 20) setVisibleCount(savedIdx + 10)
+        setSelectedVideoId(urlSelectVideo)
+      } else {
+        const savedId = sessionStorage.getItem('selectedVideoId')
+        const savedIdx = savedId ? validVideosData.findIndex(v => v.youtube_video_id === savedId) : -1
+        const hasRestored = savedIdx >= 0
+        const initialId = hasRestored ? savedId! : validVideosData[0]?.youtube_video_id ?? null
+        if (hasRestored) {
+          pendingScrollToSelected.current = true
+          if (savedIdx >= 20) setVisibleCount(savedIdx + 10)
+        }
+        setSelectedVideoId(initialId)
       }
-      setSelectedVideoId(initialId)
       setFavoriteIds(new Set(favoritesData.map(f => f.youtube_video_id)))
       const notesMap: Record<string, string> = {}
       for (const note of notesData) {
@@ -404,6 +407,10 @@ export default function DashboardPage() {
     if (!video) return
 
     setSummaryLoadingVideoId(videoId)
+    try {
+      localStorage.setItem('summary-loading', JSON.stringify({ videoId, title: video.title }))
+      window.dispatchEvent(new Event('summary-loading-updated'))
+    } catch {}
     setVideos(prev =>
       prev.map(v =>
         v.youtube_video_id === videoId
@@ -447,6 +454,10 @@ export default function DashboardPage() {
       console.error('Error refreshing summary:', error)
     } finally {
       setSummaryLoadingVideoId(null)
+      try {
+        localStorage.removeItem('summary-loading')
+        window.dispatchEvent(new Event('summary-loading-updated'))
+      } catch {}
     }
   }
 
@@ -1167,15 +1178,6 @@ export default function DashboardPage() {
       </div>
     </AppShell>
 
-    {summaryLoadingVideoId && (
-      <div className="fixed bottom-6 right-6 z-50 rounded-xl px-4 py-3 flex items-center gap-3 text-sm font-medium shadow-lg tone-notify-loading">
-        <svg className="animate-spin h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-        </svg>
-        요약 작업 중입니다...
-      </div>
-    )}
-    </>
+</>
   )
 }
