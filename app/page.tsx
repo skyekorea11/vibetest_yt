@@ -756,7 +756,7 @@ export default function DashboardPage() {
             <p className="ui-text-body text-gray-500">자막이 없으면 저는 일을 할수 없어요 😭</p>
           ) : video.transcript_status === 'pending' ? (
             <p className="ui-text-body text-gray-500 animate-pulse">자막 추출 중...</p>
-          ) : video.transcript_status === 'failed' ? (
+          ) : video.transcript_status === 'failed' && video.summary_status !== null ? (
             <p className="ui-text-body text-gray-500">자막을 가져오지 못했습니다. 다시 시도해 주세요.</p>
           ) : video.summary_status === 'failed' && video.summary_text ? (
             <p className="ui-text-body text-gray-600">{video.summary_text}</p>
@@ -794,11 +794,9 @@ export default function DashboardPage() {
               ? video.transcript_status === 'pending'
                 ? '자막 추출 중...'
                 : '요약 생성 중...'
-              : video.transcript_status === 'failed' || video.transcript_status === 'not_available'
-              ? '요약 다시 시도'
               : video.summary_status === 'complete' && !!video.summary_text
               ? '요약 완료'
-              : video.summary_status === 'failed'
+              : (video.transcript_status === 'failed' || video.transcript_status === 'not_available' || video.summary_status === 'failed') && video.summary_status !== null
               ? '요약 다시 시도'
               : '요약 생성'}
           </button>
@@ -906,6 +904,7 @@ export default function DashboardPage() {
   }
 
   return (
+    <>
     <AppShell {...shellProps}>
       <div className={`grid grid-cols-1 gap-4 xl:text-slate-900 ${newsPanelCollapsed ? 'xl:grid-cols-[350px_minmax(0,1fr)_auto]' : 'xl:grid-cols-[350px_minmax(0,1fr)_280px]'}`}>
 
@@ -1089,29 +1088,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {!newsPanelCollapsed && (summaryLoadingVideoId || summaryDoneVideoId) && (
-              <div className={`mt-3 rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 text-sm font-medium shadow-sm ${summaryDoneVideoId ? 'tone-notify-done' : 'tone-notify-loading'}`}>
-                {summaryLoadingVideoId ? (
-                  <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-                    </svg>
-                    요약 작업 중입니다...
-                  </span>
-                ) : (
-                  <>
-                    <span>✅ 요약 완료!</span>
-                    <button
-                      onClick={() => { setSelectedVideoId(summaryDoneVideoId); setSummaryDoneVideoId(null) }}
-                      className="shrink-0 rounded-lg tone-notify-done-btn text-xs px-2.5 py-1 transition-colors"
-                    >
-                      바로가기
-                    </button>
-                  </>
-                )}
-              </div>
-            )}
 
             {!newsPanelCollapsed && (
               newsPanelLoading ? (
@@ -1169,5 +1145,30 @@ export default function DashboardPage() {
 
       </div>
     </AppShell>
+
+    {(summaryLoadingVideoId || summaryDoneVideoId) && (
+      <div className={`fixed bottom-6 right-6 z-50 rounded-xl px-4 py-3 flex items-center gap-3 text-sm font-medium shadow-lg ${summaryDoneVideoId ? 'tone-notify-done' : 'tone-notify-loading'}`}>
+        {summaryLoadingVideoId ? (
+          <span className="flex items-center gap-2">
+            <svg className="animate-spin h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+            </svg>
+            요약 작업 중입니다...
+          </span>
+        ) : (
+          <>
+            <span>✅ 요약 완료!</span>
+            <button
+              onClick={() => { setSelectedVideoId(summaryDoneVideoId); setSummaryDoneVideoId(null) }}
+              className="shrink-0 rounded-lg tone-notify-done-btn text-xs px-2.5 py-1 transition-colors"
+            >
+              바로가기
+            </button>
+          </>
+        )}
+      </div>
+    )}
+    </>
   )
 }

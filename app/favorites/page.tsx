@@ -601,7 +601,7 @@ export default function FavoritesPage() {
       <div className="sticky top-0 z-10 app-shell-bg pt-4 pb-2 border-b border-slate-100">
         <div className="mb-3 flex items-center gap-2 xl:text-slate-900">
           <Heart size={18} className="text-red-400 fill-red-400" />
-          <h1 className="text-lg font-semibold">나의 Pick</h1>
+          <h1 className="text-lg font-semibold text-foreground">나의 Pick</h1>
           <span className="text-sm text-gray-500">({favoriteVideos.length}개 영상)</span>
         </div>
 
