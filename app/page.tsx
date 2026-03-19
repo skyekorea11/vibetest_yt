@@ -65,6 +65,7 @@ export default function DashboardPage() {
   const [videoSortMode, setVideoSortMode] = useState<VideoSortMode>('latest')
   const [visibleCount, setVisibleCount] = useState(20)
   const [summaryLoadingVideoId, setSummaryLoadingVideoId] = useState<string | null>(null)
+  const [summaryDoneVideoId, setSummaryDoneVideoId] = useState<string | null>(null)
   const [summaryElapsedSeconds, setSummaryElapsedSeconds] = useState(0)
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set())
   const [noteTextByVideoId, setNoteTextByVideoId] = useState<Record<string, string>>({})
@@ -419,6 +420,9 @@ export default function DashboardPage() {
         )
         const cacheKey = `${result.video.summary_text || ''}|${result.video.title || ''}`
         void loadRelatedNews(videoId, cacheKey, 'news')
+        if (result.video.summary_status === 'complete' && result.video.summary_text) {
+          setSummaryDoneVideoId(videoId)
+        }
       }
     } catch (error) {
       console.error('Error refreshing summary:', error)
@@ -1084,6 +1088,33 @@ export default function DashboardPage() {
                 </button>
               </div>
             </div>
+
+            {!newsPanelCollapsed && (summaryLoadingVideoId || summaryDoneVideoId) && (
+              <div className={`mt-3 rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 text-sm font-medium shadow-sm
+                ${summaryDoneVideoId
+                  ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+                  : 'bg-indigo-50 border border-indigo-200 text-indigo-700'}`}>
+                {summaryLoadingVideoId ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                    </svg>
+                    요약 작업 중입니다...
+                  </span>
+                ) : (
+                  <>
+                    <span>✅ 요약 완료!</span>
+                    <button
+                      onClick={() => { setSelectedVideoId(summaryDoneVideoId); setSummaryDoneVideoId(null) }}
+                      className="shrink-0 rounded-lg bg-emerald-600 text-white text-xs px-2.5 py-1 hover:bg-emerald-700 transition-colors"
+                    >
+                      바로가기
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
 
             {!newsPanelCollapsed && (
               newsPanelLoading ? (
