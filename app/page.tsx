@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
 import { Heart, RefreshCw, ExternalLink, ArrowUpDown, ChevronRight } from 'lucide-react'
 import { Channel, Video } from '@/types'
 import { channelRepository } from '@/lib/supabase/channels'
@@ -57,8 +56,6 @@ type VideoSortMode = 'latest' | 'interest'
 
 export default function DashboardPage() {
   const panelMaxHeight = 'calc(100vh - 64px - 40px)'
-  const searchParams = useSearchParams()
-  const router = useRouter()
 
   const [channels, setChannels] = useState<Channel[]>([])
   const [videos, setVideos] = useState<Video[]>([])
@@ -110,12 +107,13 @@ export default function DashboardPage() {
   useEffect(() => { void loadSupadataQuota() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const selectVideo = searchParams.get('selectVideo')
+    const params = new URLSearchParams(window.location.search)
+    const selectVideo = params.get('selectVideo')
     if (selectVideo) {
       setSelectedVideoId(selectVideo)
-      router.replace('/')
+      window.history.replaceState(null, '', '/')
     }
-  }, [searchParams, router])
+  }, [])
 
   useEffect(() => {
     if (!summaryLoadingVideoId) {
@@ -770,7 +768,7 @@ export default function DashboardPage() {
             </div>
           ) : video.transcript_status === 'not_available' ? (
             <p className="ui-text-body text-gray-500">자막이 없으면 저는 일을 할수 없어요 😭</p>
-          ) : video.transcript_status === 'pending' ? (
+          ) : video.transcript_status === 'pending' && summaryLoadingVideoId === video.youtube_video_id ? (
             <p className="ui-text-body text-gray-500 animate-pulse">자막 추출 중...</p>
           ) : video.transcript_status === 'failed' && video.summary_status !== null ? (
             <p className="ui-text-body text-gray-500">자막을 가져오지 못했습니다. 다시 시도해 주세요.</p>
