@@ -292,11 +292,7 @@ export class SupadataTranscriptProvider implements TranscriptProvider {
     };
 
     try {
-      let text = (await tryLang('ko')) ?? (await tryLang('en'));
-      if (!text) {
-        await sleep(2000);
-        text = (await tryLang('ko')) ?? (await tryLang('en'));
-      }
+      const text = (await tryLang('ko')) ?? (await tryLang('en'));
       if (!text) return { status: 'NOT_AVAILABLE' };
       return { status: 'READY', text: text.slice(0, 50000), source: 'azure-service' };
     } catch (err) {

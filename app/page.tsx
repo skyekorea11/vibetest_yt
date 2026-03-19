@@ -405,7 +405,14 @@ export default function DashboardPage() {
       )
     )
     try {
-      const result = await refreshVideoSummaryAction(videoId, video.title, video.description, enableTranscriptPipeline)
+      let result = await refreshVideoSummaryAction(videoId, video.title, video.description, enableTranscriptPipeline)
+
+      // 자막 추출 실패 시 3초 후 클라이언트에서 1회 자동 재시도
+      if (result.video && (result.video.transcript_status === 'failed' || result.video.transcript_status === 'not_available') && !result.video.summary_text) {
+        await new Promise(resolve => setTimeout(resolve, 3000))
+        result = await refreshVideoSummaryAction(videoId, video.title, video.description, enableTranscriptPipeline)
+      }
+
       if (result.video) {
         setVideos(prev =>
           prev.map(v => (v.youtube_video_id === videoId ? { ...v, ...result.video } : v))
