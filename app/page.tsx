@@ -730,9 +730,11 @@ export default function DashboardPage() {
                 <span className="font-medium text-gray-600">{Math.max(0, 60 - summaryElapsedSeconds)}초 남았습니다</span>
               </p>
               <p className="text-xs text-gray-400">
-                {summaryElapsedSeconds < 20
+                {summaryElapsedSeconds < 8
+                  ? '🤔 흠...누군가 일을 제대로 하지 않네요. 다시 채찍질 해보겠습니다.'
+                  : summaryElapsedSeconds < 25
                   ? '🧘 기다리는 동안 기지개를 펴 보아요!'
-                  : summaryElapsedSeconds < 40
+                  : summaryElapsedSeconds < 45
                   ? '☕ 커피 한 모금 하고 오세요~'
                   : '🏁 거의 다 됐어요! 조금만 더...'}
               </p>
@@ -772,16 +774,18 @@ export default function DashboardPage() {
         <div className="flex">
           <button
             onClick={() => handleRefreshSummary(video.youtube_video_id)}
-            disabled={isSummaryLoading || (video.summary_status === 'complete' && !!video.summary_text)}
+            disabled={isSummaryLoading || (video.summary_status === 'complete' && !!video.summary_text && video.transcript_status !== 'failed')}
             className="tone-primary-btn ui-btn disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {isSummaryLoading
               ? video.transcript_status === 'pending'
                 ? '자막 추출 중...'
                 : '요약 생성 중...'
+              : video.transcript_status === 'failed'
+              ? '요약 다시 시도'
               : video.summary_status === 'complete' && !!video.summary_text
               ? '요약 완료'
-              : video.summary_status === 'failed' || video.transcript_status === 'not_available' || video.transcript_status === 'failed'
+              : video.summary_status === 'failed' || video.transcript_status === 'not_available'
               ? '요약 다시 시도'
               : '요약 생성'}
           </button>
