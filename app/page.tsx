@@ -64,7 +64,7 @@ export default function DashboardPage() {
   const [selectedChannelIds, setSelectedChannelIds] = useState<string[]>([])
   const [videoSortMode, setVideoSortMode] = useState<VideoSortMode>('latest')
   const [visibleCount, setVisibleCount] = useState(20)
-  const [isSummaryLoading, setIsSummaryLoading] = useState(false)
+  const [summaryLoadingVideoId, setSummaryLoadingVideoId] = useState<string | null>(null)
   const [summaryElapsedSeconds, setSummaryElapsedSeconds] = useState(0)
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set())
   const [noteTextByVideoId, setNoteTextByVideoId] = useState<Record<string, string>>({})
@@ -106,14 +106,14 @@ export default function DashboardPage() {
   useEffect(() => { void loadSupadataQuota() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!isSummaryLoading) {
+    if (!summaryLoadingVideoId) {
       setSummaryElapsedSeconds(0)
       return
     }
     setSummaryElapsedSeconds(0)
     const interval = setInterval(() => setSummaryElapsedSeconds(s => s + 1), 1000)
     return () => clearInterval(interval)
-  }, [isSummaryLoading])
+  }, [summaryLoadingVideoId])
 
   // 60초마다 refresh 상태 폴링
   useEffect(() => {
@@ -392,7 +392,7 @@ export default function DashboardPage() {
     const video = videos.find(v => v.youtube_video_id === videoId)
     if (!video) return
 
-    setIsSummaryLoading(true)
+    setSummaryLoadingVideoId(videoId)
     setVideos(prev =>
       prev.map(v =>
         v.youtube_video_id === videoId
@@ -423,7 +423,7 @@ export default function DashboardPage() {
     } catch (error) {
       console.error('Error refreshing summary:', error)
     } finally {
-      setIsSummaryLoading(false)
+      setSummaryLoadingVideoId(null)
     }
   }
 
@@ -727,7 +727,7 @@ export default function DashboardPage() {
 
         <div className="border border-slate-100 bg-slate-50/50 rounded-xl p-4">
           <h3 className="ui-title-sm text-gray-800 mb-2">영상 요약</h3>
-          {isSummaryLoading ? (
+          {summaryLoadingVideoId === video.youtube_video_id ? (
             <div className="space-y-1.5">
               <p className="ui-text-body text-gray-500 animate-pulse">
                 {video.transcript_status === 'pending'
@@ -783,10 +783,10 @@ export default function DashboardPage() {
         <div className="flex">
           <button
             onClick={() => handleRefreshSummary(video.youtube_video_id)}
-            disabled={isSummaryLoading || (video.summary_status === 'complete' && !!video.summary_text && video.transcript_status !== 'failed' && video.transcript_status !== 'not_available')}
+            disabled={summaryLoadingVideoId === video.youtube_video_id || (video.summary_status === 'complete' && !!video.summary_text && video.transcript_status !== 'failed' && video.transcript_status !== 'not_available')}
             className="tone-primary-btn ui-btn disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {isSummaryLoading
+            {summaryLoadingVideoId === video.youtube_video_id
               ? video.transcript_status === 'pending'
                 ? '자막 추출 중...'
                 : '요약 생성 중...'
