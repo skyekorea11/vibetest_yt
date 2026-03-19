@@ -1090,10 +1090,7 @@ export default function DashboardPage() {
             </div>
 
             {!newsPanelCollapsed && (summaryLoadingVideoId || summaryDoneVideoId) && (
-              <div className={`mt-3 rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 text-sm font-medium shadow-sm
-                ${summaryDoneVideoId
-                  ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
-                  : 'bg-indigo-50 border border-indigo-200 text-indigo-700'}`}>
+              <div className={`mt-3 rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 text-sm font-medium shadow-sm ${summaryDoneVideoId ? 'tone-notify-done' : 'tone-notify-loading'}`}>
                 {summaryLoadingVideoId ? (
                   <span className="flex items-center gap-2">
                     <svg className="animate-spin h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none">
@@ -1107,7 +1104,7 @@ export default function DashboardPage() {
                     <span>✅ 요약 완료!</span>
                     <button
                       onClick={() => { setSelectedVideoId(summaryDoneVideoId); setSummaryDoneVideoId(null) }}
-                      className="shrink-0 rounded-lg bg-emerald-600 text-white text-xs px-2.5 py-1 hover:bg-emerald-700 transition-colors"
+                      className="shrink-0 rounded-lg tone-notify-done-btn text-xs px-2.5 py-1 transition-colors"
                     >
                       바로가기
                     </button>

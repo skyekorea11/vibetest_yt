@@ -438,3 +438,67 @@ html.dark.beige .dashboard-video-item.dashboard-video-selected .video-meta-text 
     border-color: transparent !important;
   }
 }
+
+/* 요약 진행/완료 팝업 */
+.tone-notify-loading {
+  background-color: #eef2ff;
+  border: 1px solid #c7d2fe;
+  color: #4338ca;
+}
+.tone-notify-done {
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+.tone-notify-done-btn {
+  background-color: #059669;
+  color: #ffffff;
+}
+.tone-notify-done-btn:hover { background-color: #047857; }
+
+html.beige:not(.dark) .tone-notify-loading {
+  background-color: #fef9f0;
+  border-color: #f0d9a8;
+  color: #92400e;
+}
+html.beige:not(.dark) .tone-notify-done {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #14532d;
+}
+html.beige:not(.dark) .tone-notify-done-btn {
+  background-color: #15803d;
+}
+html.beige:not(.dark) .tone-notify-done-btn:hover { background-color: #166534; }
+
+html.dark .tone-notify-loading {
+  background-color: #1e1b4b;
+  border-color: #3730a3;
+  color: #a5b4fc;
+}
+html.dark .tone-notify-done {
+  background-color: #064e3b;
+  border-color: #065f46;
+  color: #6ee7b7;
+}
+html.dark .tone-notify-done-btn {
+  background-color: #047857;
+  color: #d1fae5;
+}
+html.dark .tone-notify-done-btn:hover { background-color: #065f46; }
+
+html.dark.beige .tone-notify-loading {
+  background-color: #1c150a;
+  border-color: #4a3000;
+  color: #d4a96a;
+}
+html.dark.beige .tone-notify-done {
+  background-color: #052e16;
+  border-color: #14532d;
+  color: #86efac;
+}
+html.dark.beige .tone-notify-done-btn {
+  background-color: #166534;
+  color: #dcfce7;
+}
+html.dark.beige .tone-notify-done-btn:hover { background-color: #14532d; }
