@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import SummaryDoneNotification from "@/components/SummaryDoneNotification";
 
 export const maxDuration = 60
 
@@ -31,6 +32,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         {children}
+        <SummaryDoneNotification />
       </body>
     </html>
   );
