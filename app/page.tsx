@@ -104,16 +104,11 @@ export default function DashboardPage() {
     () => new Map(channels.map((channel) => [channel.youtube_channel_id, channel.thumbnail_url || ''])),
     [channels]
   )
-  // mount 시 URL selectVideo param을 ref에 미리 저장 (loadData async 완료 전 대비)
-  const pendingSelectVideoId = useRef<string | null>(null)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    const selectVideo = params.get('selectVideo')
-    if (selectVideo) {
-      pendingSelectVideoId.current = selectVideo
-      window.history.replaceState(null, '', '/')
-    }
-    loadData()
+    const selectVideo = params.get('selectVideo') ?? undefined
+    if (selectVideo) window.history.replaceState(null, '', '/')
+    loadData(selectVideo)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { void loadSupadataQuota() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -296,7 +291,7 @@ export default function DashboardPage() {
     }
   }
 
-  const loadData = async () => {
+  const loadData = async (selectVideoId?: string | null) => {
     setIsLoading(true)
     try {
       const hasApiKey = !!process.env.NEXT_PUBLIC_YOUTUBE_API_KEY?.trim()
@@ -319,13 +314,11 @@ export default function DashboardPage() {
       const validVideosData = videosData.filter(isValidStoredVideo)
       setChannels(channelsData)
       setVideos(validVideosData)
-      // URL param(바로가기)이 있으면 최우선 (mount 시 ref에 저장해둔 값 사용)
-      const urlSelectVideo = pendingSelectVideoId.current
-      if (urlSelectVideo) {
-        pendingSelectVideoId.current = null
+      // URL param(바로가기)이 있으면 최우선
+      if (selectVideoId) {
         pendingScrollToSelected.current = true
         setVisibleCount(validVideosData.length) // 해당 영상이 어디에 있든 렌더되도록
-        setSelectedVideoId(urlSelectVideo)
+        setSelectedVideoId(selectVideoId)
       } else {
         const savedId = sessionStorage.getItem('selectedVideoId')
         const savedIdx = savedId ? validVideosData.findIndex(v => v.youtube_video_id === savedId) : -1
@@ -795,10 +788,10 @@ export default function DashboardPage() {
                   : '🤔 흠...누군가 일을 제대로 하지 않네요. 다시 채찍질 해보겠습니다.'}
               </p>
             </div>
-          ) : (video.transcript_status === 'not_available' || video.transcript_status === 'failed') && confirmedUnavailableIds.has(video.youtube_video_id) ? (
-            <p className="ui-text-body text-gray-500">자막이 없으면 저는 일을 할수 없어요 😭</p>
           ) : video.transcript_status === 'not_available' && video.summary_status !== null ? (
-            <p className="ui-text-body text-gray-500">자막을 가져오지 못했습니다. 다시 시도해 주세요.</p>
+            <p className="ui-text-body text-gray-500">자막이 없으면 저는 일을 할수 없어요 😭</p>
+          ) : video.transcript_status === 'failed' && confirmedUnavailableIds.has(video.youtube_video_id) ? (
+            <p className="ui-text-body text-gray-500">자막이 없으면 저는 일을 할수 없어요 😭</p>
           ) : video.transcript_status === 'pending' && summaryLoadingVideoId === video.youtube_video_id ? (
             <p className="ui-text-body text-gray-500 animate-pulse">자막 추출 중...</p>
           ) : video.transcript_status === 'failed' && video.summary_status !== null ? (
@@ -832,7 +825,7 @@ export default function DashboardPage() {
         <div className="flex">
           <button
             onClick={() => handleRefreshSummary(video.youtube_video_id)}
-            disabled={summaryLoadingVideoId === video.youtube_video_id || confirmedUnavailableIds.has(video.youtube_video_id) || (video.summary_status === 'complete' && !!video.summary_text && video.transcript_status !== 'failed' && video.transcript_status !== 'not_available')}
+            disabled={summaryLoadingVideoId === video.youtube_video_id || (video.transcript_status === 'not_available' && video.summary_status !== null) || confirmedUnavailableIds.has(video.youtube_video_id) || (video.summary_status === 'complete' && !!video.summary_text && video.transcript_status !== 'failed' && video.transcript_status !== 'not_available')}
             className="tone-primary-btn ui-btn disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {summaryLoadingVideoId === video.youtube_video_id
