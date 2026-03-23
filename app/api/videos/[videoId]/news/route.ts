@@ -1104,6 +1104,12 @@ const CORE_CYBER_SECURITY_TERMS = [
 ]
 const PLATFORM_CYBER_TERMS = ['아이폰', 'ios', '안드로이드', '탈옥', '포렌식', '디지털포렌식']
 const CYBER_SECURITY_TERMS = [...CORE_CYBER_SECURITY_TERMS, ...PLATFORM_CYBER_TERMS]
+const SOCIAL_LEGAL_TERMS = [
+  '집행유예', '판결', '법원', '재판', '검찰', '기소', '항소', '상고', '선고',
+  '처벌', '형량', '가해자', '피해자', '피의자', '피고인',
+  '교통사고', '음주운전', '뺑소니', '살인', '폭행', '상해', '사망',
+  '논란', '분노', '솜방망이', '무죄', '유죄', '감형',
+]
 const GENERIC_ENTITY_ANCHOR_TERMS = new Set([
   '아이폰', 'ios', '안드로이드', '스마트폰', '모바일',
   '혁명', '충격', '이유', '전망', '분석',
@@ -1498,6 +1504,8 @@ export async function GET(
     // "아이폰급 혁명"처럼 플랫폼 단어만 등장하는 기술/경제 영상이 보안 토픽으로 오분류되는 것을 방지
     const isCyberSecurityTopic = hasCoreCyberSignal && (hasPlatformCyberSignal || hasCoreCyberSignal)
     const isHousingMigrationTopic = !isCyberSecurityTopic && HOUSING_MIGRATION_TERMS.some((kw) => normalizedBase.includes(kw))
+    const isSocialLegalTopic = !isCartelTopic && !isCyberSecurityTopic && !isHousingMigrationTopic
+      && SOCIAL_LEGAL_TERMS.filter(kw => normalizedBase.includes(kw)).length >= 2
     if (isCartelTopic) {
       querySet.add('공정거래위원회 담합')
       querySet.add('가격 담합 과징금')
@@ -1523,8 +1531,14 @@ export async function GET(
       querySet.add('iOS spyware exploit')
       querySet.add('모바일 보안 취약점')
     }
+    if (isSocialLegalTopic) {
+      const legalKeywords = SOCIAL_LEGAL_TERMS.filter(kw => normalizedBase.includes(kw)).slice(0, 3)
+      if (legalKeywords.length > 0) querySet.add(legalKeywords.join(' '))
+      querySet.add('판결 논란')
+      querySet.add('집행유예 판결')
+    }
     let queryCandidates = [...querySet].filter(Boolean)
-    if (isCartelTopic || isStarlinkTelecomTopic || isHousingMigrationTopic || isCyberSecurityTopic) {
+    if (isCartelTopic || isStarlinkTelecomTopic || isHousingMigrationTopic || isCyberSecurityTopic || isSocialLegalTopic) {
       const priority = isFoodCartelTopic
         ? ['공정거래위원회 식품 담합', '밀가루 설탕 포도당 담합', '식품 원재료 가격 담합', '공정거래위원회 담합', '가격 담합 과징금']
         : isCyberSecurityTopic
@@ -1533,6 +1547,8 @@ export async function GET(
           ? ['서울 경기 이사 수요', '인서울 탈서울 주거 이동', '수도권 주택 공급 아파트 분양', '전세 월세 주택시장']
           : (isStarlinkTelecomTopic
             ? ['스타링크 위성통신 경쟁', '스페이스X 스타링크 통신업계', 'Verizon AT&T Starlink competition']
+            : isSocialLegalTopic
+            ? ['판결 논란', '집행유예 판결']
             : ['공정거래위원회 담합', '가격 담합 과징금']))
       const prioritized = [...priority, ...queryCandidates]
       const deduped: string[] = []
@@ -1619,6 +1635,12 @@ export async function GET(
           ...extractKeywords(baseText, 10),
           ...extractKeywords(queryUsed, 6),
         ])]
+      : isSocialLegalTopic
+      ? [...new Set([
+          ...SOCIAL_LEGAL_TERMS,
+          ...extractKeywords(baseText, 10),
+          ...extractKeywords(queryUsed, 6),
+        ])]
       : [...new Set([
           ...extractKeywords(baseText, 12),
           ...taxonomyTerms,
@@ -1641,6 +1663,11 @@ export async function GET(
           ...extractKeywords(titleText, 8),
           ...extractKeywords(summaryText, 4),
         ], 10)
+      : isSocialLegalTopic
+      ? dedupeTerms([
+          ...SOCIAL_LEGAL_TERMS,
+          ...extractKeywords(titleText, 8),
+        ], 10)
       : dedupeTerms(
           [
             ...extractKeywords(titleText, 8),
@@ -1649,7 +1676,7 @@ export async function GET(
           ].filter((term) => !isWeakRelevanceTerm(term)),
           10
         )
-    const rawEntityAnchorTerms = (isCartelTopic || isHousingMigrationTopic || isCyberSecurityTopic)
+    const rawEntityAnchorTerms = (isCartelTopic || isHousingMigrationTopic || isCyberSecurityTopic || isSocialLegalTopic)
       ? []
       : dedupeTerms(extractEntityAnchorTerms(titleText, 6), 6)
     const specificEntityAnchorTerms = rawEntityAnchorTerms.filter(
@@ -1661,7 +1688,7 @@ export async function GET(
     const minScoreBase = hasSpecificEntityAnchor
       ? Math.max(relevanceTerms.length >= 8 ? 2 : 1, 2)
       : (relevanceTerms.length >= 8 ? 2 : 1)
-    const minScore = isHousingMigrationTopic
+    const minScore = (isHousingMigrationTopic || isSocialLegalTopic)
       ? 1
       : (channelNewsMode === 'strict' ? Math.max(minScoreBase + 1, 3) : minScoreBase)
 
@@ -1706,11 +1733,11 @@ export async function GET(
       } else if (summaryBasisTerms.length > 0 && a._summaryBasisScore < 1) {
         return false
       }
-      if (isCartelTopic || isHousingMigrationTopic || isCyberSecurityTopic) return true
+      if (isCartelTopic || isHousingMigrationTopic || isCyberSecurityTopic || isSocialLegalTopic) return true
       if (strongAnchorTerms.length === 0) return true
       return a._anchorScore >= minAnchorScore
     })
-    if (!isCartelTopic && !isHousingMigrationTopic && !isCyberSecurityTopic && entityAnchorTerms.length > 0) {
+    if (!isCartelTopic && !isHousingMigrationTopic && !isCyberSecurityTopic && !isSocialLegalTopic && entityAnchorTerms.length > 0) {
       relevant = relevant.filter((a) => {
         const t = a.title.toLowerCase().replace(/\s+/g, '')
         return entityAnchorTerms.some((term) => t.includes(term))
@@ -1726,8 +1753,8 @@ export async function GET(
         return hasFood
       })
     }
-    if (isHousingMigrationTopic && relevant.length === 0 && scored.length > 0) {
-      // 주거이동 토픽은 매체별 표현 편차가 커서 점수 0~1 기사도 상위 일부 허용
+    if ((isHousingMigrationTopic || isSocialLegalTopic) && relevant.length === 0 && scored.length > 0) {
+      // 주거이동·사회법률 토픽은 매체별 표현 편차가 커서 점수 0~1 기사도 상위 일부 허용
       relevant = scored.filter((a) => a._score >= 1).slice(0, 8)
     }
     if (isCyberSecurityTopic) {
